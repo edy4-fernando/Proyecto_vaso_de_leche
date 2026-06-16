@@ -1,0 +1,322 @@
+/* ============================================================
+   sidebar.css — Sidebar colapsable con dark mode
+   Vaso de Leche Cusco — Panel de Administración
+   ============================================================ */
+
+/* ── Contenedor principal ── */
+.vl-sidebar {
+  position:   fixed;
+  top:        0;
+  left:       0;
+  height:     100vh;
+  width:      var(--vl-sidebar-w);
+  background: var(--vl-sidebar-bg);
+  display:    flex;
+  flex-direction: column;
+  z-index:    var(--vl-z-sidebar);
+  transition: width .25s cubic-bezier(.4,0,.2,1);
+  overflow:   hidden;
+  border-right: 1px solid rgba(255,255,255,.04);
+}
+
+/* ── Estado colapsado ── */
+.vl-sidebar.collapsed {
+  width: var(--vl-sidebar-w-collapsed);
+}
+
+/* ── Header del sidebar (logo + toggle) ── */
+.vl-sidebar__header {
+  display:     flex;
+  align-items: center;
+  justify-content: space-between;
+  padding:     0 14px;
+  height:      var(--vl-navbar-h);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  flex-shrink: 0;
+}
+
+.vl-sidebar__brand {
+  display:     flex;
+  align-items: center;
+  gap:         10px;
+  text-decoration: none;
+  overflow:    hidden;
+  white-space: nowrap;
+}
+
+.vl-sidebar__brand-icon {
+  width:            34px;
+  height:           34px;
+  border-radius:    var(--vl-radius-sm);
+  background:       linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  display:          flex;
+  align-items:      center;
+  justify-content:  center;
+  font-size:        1rem;
+  color:            #fff;
+  flex-shrink:      0;
+}
+
+.vl-sidebar__brand-text {
+  display:     flex;
+  flex-direction: column;
+  line-height: 1.2;
+  overflow:    hidden;
+}
+
+.vl-sidebar__brand-title {
+  font-size:   0.78rem;
+  font-weight: 700;
+  color:       #f1f5f9;
+  white-space: nowrap;
+  letter-spacing: .3px;
+}
+
+.vl-sidebar__brand-sub {
+  font-size:  0.65rem;
+  color:      var(--vl-sidebar-text-muted);
+  white-space: nowrap;
+}
+
+/* Ocultar textos al colapsar */
+.vl-sidebar.collapsed .vl-sidebar__brand-text,
+.vl-sidebar.collapsed .vl-nav__label,
+.vl-sidebar.collapsed .vl-nav__link-text,
+.vl-sidebar.collapsed .vl-nav__badge,
+.vl-sidebar.collapsed .vl-sidebar__footer-info {
+  opacity:    0;
+  width:      0;
+  overflow:   hidden;
+  transition: opacity .15s ease, width .15s ease;
+}
+
+.vl-sidebar__brand-text,
+.vl-nav__link-text,
+.vl-nav__badge,
+.vl-sidebar__footer-info {
+  transition: opacity .2s ease, width .2s ease;
+}
+
+/* ── Botón toggle ── */
+.vl-sidebar__toggle {
+  width:            30px;
+  height:           30px;
+  border-radius:    var(--vl-radius-sm);
+  background:       rgba(255,255,255,.07);
+  border:           none;
+  color:            var(--vl-sidebar-text);
+  cursor:           pointer;
+  display:          flex;
+  align-items:      center;
+  justify-content:  center;
+  font-size:        1rem;
+  flex-shrink:      0;
+  transition:       var(--vl-transition-fast);
+}
+
+.vl-sidebar__toggle:hover {
+  background: rgba(255,255,255,.13);
+  color:      #fff;
+}
+
+/* ── Navegación ── */
+.vl-nav {
+  flex:       1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding:    12px 8px;
+  display:    flex;
+  flex-direction: column;
+  gap:        2px;
+}
+
+.vl-nav::-webkit-scrollbar { width: 0; }
+
+/* Etiqueta de sección */
+.vl-nav__label {
+  font-size:     0.62rem;
+  font-weight:   700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color:          var(--vl-sidebar-text-muted);
+  padding:        14px 10px 6px;
+  white-space:    nowrap;
+  overflow:       hidden;
+  transition:     var(--vl-transition);
+}
+
+/* Link de navegación */
+.vl-nav__link {
+  display:     flex;
+  align-items: center;
+  gap:         10px;
+  padding:     9px 10px;
+  border-radius: var(--vl-radius-sm);
+  text-decoration: none;
+  color:       var(--vl-sidebar-text);
+  font-size:   0.82rem;
+  font-weight: 500;
+  white-space: nowrap;
+  position:    relative;
+  transition:  var(--vl-transition-fast);
+  overflow:    hidden;
+}
+
+.vl-nav__link:hover {
+  background: var(--vl-sidebar-hover);
+  color:      #fff;
+}
+
+.vl-nav__link.active {
+  background: var(--vl-sidebar-active);
+  color:      #93c5fd;
+  font-weight: 600;
+}
+
+.vl-nav__link.active::before {
+  content:       '';
+  position:      absolute;
+  left:          0;
+  top:           20%;
+  height:        60%;
+  width:         3px;
+  border-radius: 0 3px 3px 0;
+}
+
+/* ── Variante danger (solo maestro) ── */
+.vl-nav__link.danger:hover {
+  background: rgba(244,63,94,.12);
+  color:      #fca5a5;
+}
+
+.vl-nav__link.danger.active {
+  background: rgba(244,63,94,.18);
+  color:      #fca5a5;
+}
+
+.vl-nav__link.danger.active::before {
+  background: var(--vl-rose);
+}
+
+/* ── Ícono del link ── */
+.vl-nav__icon {
+  font-size:  1rem;
+  width:      20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* ── Badge de alerta ── */
+.vl-nav__badge {
+  margin-left: auto;
+  background:  var(--vl-rose);
+  color:       #fff;
+  font-size:   0.6rem;
+  font-weight: 700;
+  padding:     2px 6px;
+  border-radius: 99px;
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+
+/* ── Tooltip en modo colapsado ── */
+.vl-sidebar.collapsed .vl-nav__link {
+  justify-content: center;
+  padding: 10px;
+}
+
+.vl-nav__link[data-tippy-content] { cursor: pointer; }
+
+/* ── Footer del sidebar ── */
+.vl-sidebar__footer {
+  border-top: 1px solid rgba(255,255,255,.06);
+  padding:    10px 8px;
+  flex-shrink: 0;
+}
+
+.vl-sidebar__user {
+  display:     flex;
+  align-items: center;
+  gap:         10px;
+  padding:     8px 10px;
+  border-radius: var(--vl-radius-sm);
+  cursor:      default;
+  overflow:    hidden;
+}
+
+.vl-sidebar__avatar {
+  width:            34px;
+  height:           34px;
+  border-radius:    50%;
+  background:       linear-gradient(135deg, #2563eb, #7c3aed);
+  color:            #fff;
+  font-size:        0.8rem;
+  font-weight:      700;
+  display:          flex;
+  align-items:      center;
+  justify-content:  center;
+  flex-shrink:      0;
+  letter-spacing:   .5px;
+}
+
+.vl-sidebar__footer-info {
+  overflow:  hidden;
+  flex:      1;
+}
+
+.vl-sidebar__footer-name {
+  font-size:   0.78rem;
+  font-weight: 600;
+  color:       #e2e8f0;
+  white-space: nowrap;
+  display:     block;
+}
+
+.vl-sidebar__footer-role {
+  font-size:  0.65rem;
+  color:      var(--vl-sidebar-text-muted);
+  white-space: nowrap;
+  display:    block;
+}
+
+/* ── Overlay móvil ── */
+.vl-sidebar-overlay {
+  display:    none;
+  position:   fixed;
+  inset:      0;
+  background: rgba(0,0,0,.55);
+  z-index:    var(--vl-z-overlay);
+  backdrop-filter: blur(2px);
+}
+
+.vl-sidebar-overlay.active { display: block; }
+
+/* ============================================================
+   RESPONSIVE — móvil (< 992px)
+   ============================================================ */
+@media (max-width: 991.98px) {
+  .vl-sidebar {
+    transform: translateX(-100%);
+    width:     var(--vl-sidebar-w) !important;
+    transition: transform .25s cubic-bezier(.4,0,.2,1);
+  }
+
+  .vl-sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  /* Restaurar textos en móvil siempre visibles */
+  .vl-sidebar .vl-sidebar__brand-text,
+  .vl-sidebar .vl-nav__label,
+  .vl-sidebar .vl-nav__link-text,
+  .vl-sidebar .vl-nav__badge,
+  .vl-sidebar .vl-sidebar__footer-info {
+    opacity: 1 !important;
+    width:   auto !important;
+  }
+
+  .vl-sidebar .vl-nav__link {
+    justify-content: flex-start !important;
+    padding: 9px 10px !important;
+  }
+}

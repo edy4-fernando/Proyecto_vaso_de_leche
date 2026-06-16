@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>@yield('title', 'Cusco — Vaso de Leche')</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="{{ asset('css/web-portal.css') }}">
+
+  @stack('styles')
+</head>
+<body class="@yield('body-class')">
+
+  {{-- NAVBAR --}}
+  @yield('navbar', View::make('web._components.navbar'))
+
+  {{-- CONTENIDO --}}
+  @yield('content')
+
+  {{-- FOOTER --}}
+  @yield('footer', View::make('web._components.footer-institucional'))
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  @stack('scripts')
+  
+
+</body>
+</html>

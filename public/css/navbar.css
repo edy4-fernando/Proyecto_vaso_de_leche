@@ -1,0 +1,381 @@
+/* ============================================================
+   navbar.css — Barra superior del panel de administración
+   Vaso de Leche Cusco — Panel de Administración
+   ============================================================ */
+
+/* ── Contenedor principal ── */
+.vl-navbar {
+  position:   fixed;
+  top:        0;
+  left:       var(--vl-sidebar-w);
+  right:      0;
+  height:     var(--vl-navbar-h);
+  background: var(--vl-navbar-bg);
+  border-bottom: 1px solid var(--vl-navbar-border);
+  display:    flex;
+  align-items: center;
+  padding:    0 20px;
+  gap:        12px;
+  z-index:    var(--vl-z-navbar);
+  transition: left .25s cubic-bezier(.4,0,.2,1),
+              background .3s ease,
+              border-color .3s ease;
+  box-shadow: var(--vl-shadow-xs);
+}
+
+/* Ajuste cuando sidebar está colapsado */
+.vl-sidebar.collapsed ~ .vl-layout__body .vl-navbar,
+body.sidebar-collapsed .vl-navbar {
+  left: var(--vl-sidebar-w-collapsed);
+}
+
+/* ── Botón hamburguesa (solo móvil) ── */
+.vl-navbar__hamburger {
+  display:    none;
+  width:      36px;
+  height:     36px;
+  border:     none;
+  background: transparent;
+  color:      var(--vl-text-sub);
+  font-size:  1.1rem;
+  cursor:     pointer;
+  border-radius: var(--vl-radius-sm);
+  align-items:   center;
+  justify-content: center;
+  transition:  var(--vl-transition-fast);
+  flex-shrink: 0;
+}
+
+.vl-navbar__hamburger:hover {
+  background: var(--vl-bg-hover);
+  color:      var(--vl-text-main);
+}
+
+/* ── Breadcrumb / título de sección ── */
+.vl-navbar__breadcrumb {
+  flex:        1;
+  display:     flex;
+  align-items: center;
+  gap:         6px;
+  font-size:   0.8rem;
+  color:       var(--vl-text-muted);
+  overflow:    hidden;
+}
+
+.vl-navbar__breadcrumb-sep {
+  font-size: 0.7rem;
+  opacity:   .5;
+}
+
+.vl-navbar__breadcrumb-current {
+  font-weight: 600;
+  color:       var(--vl-text-main);
+  white-space: nowrap;
+  overflow:    hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Acciones del lado derecho ── */
+.vl-navbar__actions {
+  display:     flex;
+  align-items: center;
+  gap:         6px;
+  flex-shrink: 0;
+}
+
+/* ── Botón de ícono genérico ── */
+.vl-navbar__icon-btn {
+  width:            36px;
+  height:           36px;
+  border-radius:    var(--vl-radius-sm);
+  border:           none;
+  background:       transparent;
+  color:            var(--vl-text-sub);
+  font-size:        1rem;
+  cursor:           pointer;
+  display:          flex;
+  align-items:      center;
+  justify-content:  center;
+  position:         relative;
+  transition:       var(--vl-transition-fast);
+}
+
+.vl-navbar__icon-btn:hover {
+  background: var(--vl-bg-hover);
+  color:      var(--vl-text-main);
+}
+
+/* ── Badge de notificaciones ── */
+.vl-navbar__notif-badge {
+  position:    absolute;
+  top:         5px;
+  right:       5px;
+  width:       8px;
+  height:      8px;
+  background:  var(--vl-rose);
+  border-radius: 50%;
+  border:      2px solid var(--vl-navbar-bg);
+  transition:  border-color .3s ease;
+}
+
+/* ── Toggle dark mode ── */
+.vl-navbar__darkmode {
+  width:            36px;
+  height:           36px;
+  border-radius:    var(--vl-radius-sm);
+  border:           none;
+  background:       transparent;
+  color:            var(--vl-text-sub);
+  font-size:        1rem;
+  cursor:           pointer;
+  display:          flex;
+  align-items:      center;
+  justify-content:  center;
+  transition:       var(--vl-transition-fast);
+}
+
+.vl-navbar__darkmode:hover {
+  background: var(--vl-bg-hover);
+  color:      var(--vl-amber);
+}
+
+/* ── Divisor vertical ── */
+.vl-navbar__divider {
+  width:      1px;
+  height:     22px;
+  background: var(--vl-border);
+  flex-shrink: 0;
+}
+
+/* ── Dropdown de usuario ── */
+.vl-navbar__user {
+  position:   relative;
+}
+
+.vl-navbar__user-btn {
+  display:     flex;
+  align-items: center;
+  gap:         8px;
+  padding:     5px 10px 5px 5px;
+  border:      none;
+  background:  transparent;
+  cursor:      pointer;
+  border-radius: var(--vl-radius);
+  transition:  var(--vl-transition-fast);
+}
+
+.vl-navbar__user-btn:hover {
+  background: var(--vl-bg-hover);
+}
+
+/* Avatar con iniciales */
+.vl-navbar__avatar {
+  width:           34px;
+  height:          34px;
+  border-radius:   50%;
+  background:      linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  color:           #fff;
+  font-size:       0.75rem;
+  font-weight:     700;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  flex-shrink:     0;
+  letter-spacing:  .5px;
+  box-shadow:      0 0 0 2px var(--vl-navbar-bg), 0 0 0 4px var(--vl-blue-200);
+  transition:      box-shadow .3s ease;
+}
+
+html.dark .vl-navbar__avatar {
+  box-shadow: 0 0 0 2px var(--vl-navbar-bg), 0 0 0 4px rgba(59,130,246,.35);
+}
+
+.vl-navbar__user-info {
+  text-align:  left;
+  line-height: 1.2;
+}
+
+.vl-navbar__user-name {
+  display:    block;
+  font-size:  0.78rem;
+  font-weight: 600;
+  color:      var(--vl-text-main);
+  white-space: nowrap;
+  max-width:  130px;
+  overflow:   hidden;
+  text-overflow: ellipsis;
+}
+
+.vl-navbar__user-role {
+  display:   block;
+  font-size: 0.65rem;
+  color:     var(--vl-text-muted);
+  white-space: nowrap;
+}
+
+.vl-navbar__user-chevron {
+  font-size:  0.7rem;
+  color:      var(--vl-text-muted);
+  transition: transform .2s ease;
+}
+
+.vl-navbar__user-btn[aria-expanded="true"] .vl-navbar__user-chevron {
+  transform: rotate(180deg);
+}
+
+/* ── Dropdown menu ── */
+.vl-navbar__dropdown {
+  position:   absolute;
+  top:        calc(100% + 8px);
+  right:      0;
+  min-width:  210px;
+  background: var(--vl-bg-card);
+  border:     1px solid var(--vl-border);
+  border-radius: var(--vl-radius);
+  box-shadow: var(--vl-shadow-lg);
+  padding:    6px;
+  display:    none;
+  z-index:    var(--vl-z-modal);
+  animation:  vlDropIn .15s ease;
+}
+
+.vl-navbar__dropdown.open { display: block; }
+
+@keyframes vlDropIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Encabezado del dropdown */
+.vl-navbar__dropdown-header {
+  padding:      8px 10px 10px;
+  border-bottom: 1px solid var(--vl-border);
+  margin-bottom: 4px;
+}
+
+.vl-navbar__dropdown-username {
+  font-size:   0.82rem;
+  font-weight: 700;
+  color:       var(--vl-text-main);
+  display:     block;
+}
+
+.vl-navbar__dropdown-email {
+  font-size:  0.7rem;
+  color:      var(--vl-text-muted);
+  display:    block;
+  margin-top: 1px;
+}
+
+.vl-navbar__dropdown-badge {
+  display:       inline-flex;
+  align-items:   center;
+  gap:           4px;
+  font-size:     0.62rem;
+  font-weight:   700;
+  padding:       2px 7px;
+  border-radius: 99px;
+  margin-top:    5px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+.vl-navbar__dropdown-badge.maestro {
+  background: rgba(124,58,237,.15);
+  color:      #7c3aed;
+}
+
+html.dark .vl-navbar__dropdown-badge.maestro {
+  background: rgba(124,58,237,.25);
+  color:      #c4b5fd;
+}
+
+.vl-navbar__dropdown-badge.trabajador {
+  background: rgba(37,99,235,.12);
+  color:      #2563eb;
+}
+
+html.dark .vl-navbar__dropdown-badge.trabajador {
+  background: rgba(37,99,235,.22);
+  color:      #93c5fd;
+}
+
+/* Items del dropdown */
+.vl-navbar__dropdown-item {
+  display:     flex;
+  align-items: center;
+  gap:         9px;
+  padding:     8px 10px;
+  border-radius: var(--vl-radius-sm);
+  font-size:   0.8rem;
+  color:       var(--vl-text-sub);
+  text-decoration: none;
+  cursor:      pointer;
+  border:      none;
+  background:  transparent;
+  width:       100%;
+  text-align:  left;
+  transition:  var(--vl-transition-fast);
+}
+
+.vl-navbar__dropdown-item:hover {
+  background: var(--vl-bg-hover);
+  color:      var(--vl-text-main);
+}
+
+.vl-navbar__dropdown-item i {
+  width:     16px;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+/* Item de cerrar sesión */
+.vl-navbar__dropdown-item.logout {
+  color: var(--vl-rose);
+  margin-top: 4px;
+  border-top: 1px solid var(--vl-border);
+  border-radius: 0 0 var(--vl-radius-sm) var(--vl-radius-sm);
+}
+
+.vl-navbar__dropdown-item.logout:hover {
+  background: rgba(244,63,94,.08);
+  color:      var(--vl-rose);
+}
+
+/* ── Responsive ── */
+@media (max-width: 991.98px) {
+  .vl-navbar {
+    left: 0 !important;
+  }
+
+  .vl-navbar__hamburger {
+    display: flex;
+  }
+
+  .vl-navbar__user-info {
+    display: none;
+  }
+
+  .vl-navbar__user-chevron {
+    display: none;
+  }
+
+  .vl-navbar__breadcrumb {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .vl-navbar {
+    padding: 0 12px;
+    gap: 8px;
+  }
+
+  .vl-navbar__breadcrumb-root {
+    display: none;
+  }
+
+  .vl-navbar__breadcrumb-sep {
+    display: none;
+  }
+}

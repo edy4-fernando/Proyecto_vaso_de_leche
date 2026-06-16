@@ -1,0 +1,285 @@
+/* ============================================================
+   web-portal.css — Portal público ciudadano
+   Vaso de Leche Cusco
+   ============================================================ */
+
+:root {
+    --wp-gradient-start:  #1e3a8a;
+    --wp-gradient-end:    #a21caf;
+    --wp-dark:            #0f172a;
+    --wp-navy:            #1e3a5f;
+    --wp-blue:            #2563eb;
+    --wp-blue-light:      #3b82f6;
+    --wp-sky:             #38bdf8;
+    --wp-purple:          #6b21a8;
+    --wp-fuchsia:         #ec4899;
+    --wp-fuchsia-light:   #f472b6;
+    --wp-border:          #cbd5e1;
+    --wp-text-main:       #1e293b;
+    --wp-text-muted:      #64748b;
+    --wp-success:         #065f46;
+    --wp-success-bg:      #ecfdf5;
+}
+
+body {
+    background: linear-gradient(135deg, var(--wp-gradient-start) 0%, var(--wp-gradient-end) 100%);
+    min-height: 100vh;
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: white;
+}
+
+/* ── Navbar ── */
+.navbar-custom {
+    background: rgba(15, 23, 42, 0.6) !important;
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.navbar-custom .nav-link {
+    color: rgba(255,255,255,.65) !important;
+    font-size: .82rem;
+    font-weight: 500;
+    transition: color .2s;
+}
+
+.navbar-custom .nav-link:hover { color: #fff !important; }
+
+.btn-login {
+    font-size: .75rem !important;
+    font-weight: 700 !important;
+    letter-spacing: .5px;
+    border-radius: 50rem !important;
+    padding: .3rem 1rem !important;
+}
+
+/* ── Layout principal ── */
+.main-wrapper {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+}
+
+.main-wrapper-narrow {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+/* ── Hero ── */
+.hero-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.15;
+    letter-spacing: -.5px;
+}
+
+.hero-subtitle {
+    color: rgba(255,255,255,.55);
+    font-size: .9rem;
+    line-height: 1.75;
+}
+
+.hero-security-badge {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 14px;
+    padding: 1rem 1.25rem;
+    margin-top: 1.5rem;
+}
+
+.hero-security-badge h6 {
+    color: #fff;
+    font-weight: 700;
+    margin: 0 0 2px;
+    font-size: .85rem;
+}
+
+.hero-security-badge small {
+    color: rgba(255,255,255,.4);
+    font-size: .75rem;
+}
+
+/* ── Stat boxes ── */
+.stat-box {
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 14px;
+    padding: 1rem;
+    text-align: center;
+    transition: background .2s;
+}
+
+.stat-box:hover { background: rgba(255,255,255,.11); }
+
+.stat-box.accent-fuchsia { border-color: rgba(236,72,153,.25); }
+
+.stat-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--wp-sky);
+    line-height: 1;
+}
+
+.stat-label {
+    display: block;
+    font-size: .68rem;
+    color: rgba(255,255,255,.4);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin-top: 4px;
+}
+
+/* ── Card del portal (formulario de asistencia) ── */
+.card-portal {
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 20px;
+    backdrop-filter: blur(16px);
+    overflow: hidden;
+}
+
+.header-accent {
+    height: 3px;
+    background: linear-gradient(90deg, var(--wp-blue-light), var(--wp-fuchsia));
+    margin-bottom: 1.5rem;
+}
+
+/* ── Input DNI ── */
+.input-dni {
+    width: 100%;
+    padding: .9rem 1rem;
+    background: rgba(255,255,255,.08);
+    border: 1.5px solid rgba(255,255,255,.15);
+    border-radius: 10px;
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 8px;
+    text-align: center;
+    transition: all .2s;
+    outline: none;
+}
+
+.input-dni::placeholder {
+    color: rgba(255,255,255,.2);
+    letter-spacing: 2px;
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+.input-dni:focus {
+    border-color: var(--wp-blue-light);
+    background: rgba(255,255,255,.12);
+    box-shadow: 0 0 0 3px rgba(59,130,246,.2);
+}
+
+/* ── Botón principal ── */
+.btn-portal-primary {
+    width: 100%;
+    padding: .85rem;
+    background: linear-gradient(135deg, var(--wp-blue), #7c3aed);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-size: .9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity .2s, transform .15s;
+    letter-spacing: .3px;
+}
+
+.btn-portal-primary:hover {
+    opacity: .9;
+    transform: translateY(-1px);
+}
+
+/* ── Alertas ── */
+.alert-portal-success {
+    background: rgba(16,185,129,.12);
+    border: 1px solid rgba(16,185,129,.25);
+    border-radius: 10px;
+    padding: .75rem 1rem;
+    font-size: .82rem;
+    color: #6ee7b7;
+}
+
+.alert-portal-danger {
+    background: rgba(244,63,94,.12);
+    border: 1px solid rgba(244,63,94,.25);
+    border-radius: 10px;
+    padding: .75rem 1rem;
+    font-size: .82rem;
+    color: #fca5a5;
+}
+
+.alert-portal-warning {
+    background: rgba(245,158,11,.10);
+    border: 1px solid rgba(245,158,11,.2);
+    border-radius: 10px;
+    padding: .75rem 1rem;
+    font-size: .82rem;
+    color: #fbbf24;
+}
+
+.alert-portal-info {
+    background: rgba(59,130,246,.10);
+    border: 1px solid rgba(59,130,246,.2);
+    border-radius: 10px;
+    padding: .75rem 1rem;
+    font-size: .82rem;
+    color: #93c5fd;
+}
+
+/* ── Card bienvenida ── */
+.card-bienvenida {
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 20px;
+    backdrop-filter: blur(16px);
+}
+
+/* ── Footer ── */
+.footer-logos {
+    background: rgba(0,0,0,.25);
+    border-top: 1px solid rgba(255,255,255,.06);
+    padding: 2rem 0 1rem;
+    text-align: center;
+}
+
+.footer-eyebrow {
+    font-size: .72rem;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    color: rgba(255,255,255,.3);
+    margin-bottom: 1rem;
+}
+
+.logo-item {
+    color: rgba(255,255,255,.35);
+    font-size: .8rem;
+    font-weight: 600;
+    display: block;
+    text-align: center;
+}
+
+.footer-copy {
+    background: rgba(0,0,0,.3);
+    text-align: center;
+    padding: .75rem;
+    font-size: .68rem;
+    color: rgba(255,255,255,.2);
+    letter-spacing: .5px;
+}
+
+.footer-copy p { margin: 0; }
+
+.navbar-custom .nav-link.active {
+  color: #fff !important;
+  font-weight: 600;
+}

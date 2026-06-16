@@ -1,0 +1,151 @@
+/* ============================================================
+   variables.css — Tokens de diseño globales
+   Vaso de Leche Cusco — Panel de Administración
+   ============================================================ */
+
+:root {
+  /* ── Paleta primaria ── */
+  --vl-blue-50:  #eff6ff;
+  --vl-blue-100: #dbeafe;
+  --vl-blue-200: #bfdbfe;
+  --vl-blue-500: #3b82f6;
+  --vl-blue-600: #2563eb;
+  --vl-blue-700: #1d4ed8;
+
+  /* ── Paleta de acento ── */
+  --vl-indigo:   #6366f1;
+  --vl-violet:   #7c3aed;
+  --vl-emerald:  #10b981;
+  --vl-amber:    #f59e0b;
+  --vl-rose:     #f43f5e;
+  --vl-slate:    #64748b;
+
+  /* ── Superficie (Light mode) ── */
+  --vl-bg-body:      #f1f5f9;
+  --vl-bg-card:      #ffffff;
+  --vl-bg-sidebar:   #0f172a;
+  --vl-bg-navbar:    #ffffff;
+  --vl-bg-hover:     #f8fafc;
+  --vl-bg-input:     #f8fafc;
+
+  /* ── Texto (Light mode) ── */
+  --vl-text-main:    #0f172a;
+  --vl-text-sub:     #475569;
+  --vl-text-muted:   #94a3b8;
+  --vl-text-inverse: #f8fafc;
+  --vl-text-link:    #2563eb;
+
+  /* ── Bordes ── */
+  --vl-border:       #e2e8f0;
+  --vl-border-focus: #3b82f6;
+  --vl-radius-sm:    6px;
+  --vl-radius:       10px;
+  --vl-radius-lg:    16px;
+  --vl-radius-xl:    24px;
+
+  /* ── Sombras ── */
+  --vl-shadow-xs: 0 1px 2px rgba(0,0,0,.06);
+  --vl-shadow-sm: 0 2px 8px rgba(0,0,0,.08);
+  --vl-shadow:    0 4px 16px rgba(0,0,0,.10);
+  --vl-shadow-lg: 0 8px 32px rgba(0,0,0,.14);
+
+  /* ── Sidebar ── */
+  --vl-sidebar-w:           240px;
+  --vl-sidebar-w-collapsed: 64px;
+  --vl-sidebar-bg:          #1a1035;
+  --vl-sidebar-hover:       rgba(255,255,255,.06);
+  --vl-sidebar-active:      rgba(139,92,246,.22);
+  --vl-sidebar-text:        #ddd6fe;
+  --vl-sidebar-text-muted:  #7c6fad;
+  --vl-sidebar-accent:      #8b5cf6;
+
+  /* ── Navbar ── */
+  --vl-navbar-h:    60px;
+  --vl-navbar-bg:   #ffffff;
+  --vl-navbar-border: #e2e8f0;
+
+  /* ── Transiciones ── */
+  --vl-transition:  all .22s cubic-bezier(.4,0,.2,1);
+  --vl-transition-fast: all .14s ease;
+
+  /* ── Z-index ── */
+  --vl-z-sidebar:  1030;
+  --vl-z-navbar:   1020;
+  --vl-z-overlay:  1025;
+  --vl-z-toast:    1090;
+  --vl-z-modal:    1055;
+
+  /* ── Tipografía ── */
+  --vl-font:        'Inter', system-ui, -apple-system, sans-serif;
+  --vl-font-mono:   'JetBrains Mono', 'Fira Code', monospace;
+  --vl-font-size:   0.875rem;
+  --vl-line-height: 1.6;
+}
+
+/* ============================================================
+   DARK MODE — activado con clase .dark en <html>
+   ============================================================ */
+html.dark {
+  --vl-bg-body:    #0b1120;
+  --vl-bg-card:    #111827;
+  --vl-bg-sidebar: #070d1a;
+  --vl-bg-navbar:  #111827;
+  --vl-bg-hover:   #1e293b;
+  --vl-bg-input:   #1e293b;
+
+  --vl-text-main:  #f1f5f9;
+  --vl-text-sub:   #94a3b8;
+  --vl-text-muted: #475569;
+
+  --vl-border:     #1e293b;
+  --vl-navbar-border: #1e293b;
+
+  --vl-sidebar-hover:  rgba(255,255,255,.05);
+  --vl-sidebar-active: rgba(59,130,246,.22);
+
+  --vl-shadow-xs: 0 1px 2px rgba(0,0,0,.3);
+  --vl-shadow-sm: 0 2px 8px rgba(0,0,0,.35);
+  --vl-shadow:    0 4px 16px rgba(0,0,0,.4);
+  --vl-shadow-lg: 0 8px 32px rgba(0,0,0,.5);
+}
+
+/* ============================================================
+   RESET MÍNIMO
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--vl-font);
+  font-size:   var(--vl-font-size);
+  line-height: var(--vl-line-height);
+  color:       var(--vl-text-main);
+  background:  var(--vl-bg-body);
+  margin: 0;
+  transition: background .3s ease, color .3s ease;
+}
+
+/* ── Scrollbar personalizado ── */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--vl-border); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--vl-slate); }
+
+/* ── Focus ring accesible ── */
+:focus-visible {
+  outline: 2px solid var(--vl-blue-500);
+  outline-offset: 2px;
+}
+
+/* ── Utilidades de color ── */
+.text-primary  { color: var(--vl-blue-600)  !important; }
+.text-success  { color: var(--vl-emerald)   !important; }
+.text-warning  { color: var(--vl-amber)     !important; }
+.text-danger   { color: var(--vl-rose)      !important; }
+.text-muted    { color: var(--vl-text-muted)!important; }
+.text-sub      { color: var(--vl-text-sub)  !important; }

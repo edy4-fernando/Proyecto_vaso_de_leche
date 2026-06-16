@@ -1,0 +1,407 @@
+/* ============================================================
+   dashboard-theme.css — Sistema de temas para el Dashboard
+   ============================================================ */
+
+/* ── Variables base (Océano por defecto) ── */
+:root {
+  --db-sidebar-bg:      #0f172a;
+  --db-sidebar-hover:   rgba(255,255,255,.06);
+  --db-sidebar-active:  rgba(59,130,246,.18);
+  --db-sidebar-text:    #cbd5e1;
+  --db-sidebar-muted:   #64748b;
+  --db-sidebar-accent:  #3b82f6;
+  --db-accent-gradient: linear-gradient(135deg, #2563eb, #7c3aed);
+}
+
+/* ── Temas via html[data-db-theme] ── */
+html[data-db-theme="bosque"] .vl-db-sidebar {
+  --db-sidebar-bg:      #0a1a14;
+  --db-sidebar-hover:   rgba(13,148,136,.12);
+  --db-sidebar-active:  rgba(13,148,136,.22);
+  --db-sidebar-text:    #ccfbf1;
+  --db-sidebar-muted:   #5eead4;
+  --db-sidebar-accent:  #0d9488;
+  --db-accent-gradient: linear-gradient(135deg, #0d9488, #065f46);
+  background:           #0a1a14 !important;
+}
+
+html[data-db-theme="cosmico"] .vl-db-sidebar {
+  --db-sidebar-bg:      #0e0f1a;
+  --db-sidebar-hover:   rgba(99,102,241,.12);
+  --db-sidebar-active:  rgba(99,102,241,.22);
+  --db-sidebar-text:    #e0e7ff;
+  --db-sidebar-muted:   #a5b4fc;
+  --db-sidebar-accent:  #6366f1;
+  --db-accent-gradient: linear-gradient(135deg, #6366f1, #a855f7);
+  background:           #0e0f1a !important;
+}
+
+html[data-db-theme="oceano"] .vl-db-sidebar {
+  --db-sidebar-bg:      #0f172a;
+  --db-sidebar-hover:   rgba(255,255,255,.06);
+  --db-sidebar-active:  rgba(59,130,246,.18);
+  --db-sidebar-text:    #cbd5e1;
+  --db-sidebar-muted:   #64748b;
+  --db-sidebar-accent:  #3b82f6;
+  --db-accent-gradient: linear-gradient(135deg, #2563eb, #7c3aed);
+  background:           #0f172a !important;
+}
+
+/* ============================================================
+   SIDEBAR DEL DASHBOARD
+   ============================================================ */
+.vl-db-sidebar {
+  position:        fixed;
+  top:             0;
+  left:            0;
+  height:          100vh;
+  width:           var(--vl-sidebar-w);
+  background:      var(--db-sidebar-bg);
+  display:         flex;
+  flex-direction:  column;
+  z-index:         var(--vl-z-sidebar);
+  transition:      width .25s cubic-bezier(.4,0,.2,1), background .4s ease;
+  overflow:        hidden;
+  border-right:    1px solid rgba(255,255,255,.04);
+}
+
+.vl-db-sidebar.collapsed {
+  width: var(--vl-sidebar-w-collapsed);
+}
+
+/* ── Header ── */
+.vl-db-sidebar__header {
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  padding:         0 14px;
+  height:          var(--vl-navbar-h);
+  border-bottom:   1px solid rgba(255,255,255,.06);
+  flex-shrink:     0;
+}
+
+.vl-db-sidebar__brand {
+  display:         flex;
+  align-items:     center;
+  gap:             10px;
+  text-decoration: none;
+  overflow:        hidden;
+  white-space:     nowrap;
+}
+
+.vl-db-sidebar__brand-icon {
+  width:           34px;
+  height:          34px;
+  border-radius:   var(--vl-radius-sm);
+  background:      var(--db-accent-gradient);
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  font-size:       1rem;
+  color:           #fff;
+  flex-shrink:     0;
+  transition:      background .4s ease;
+}
+
+.vl-db-sidebar__brand-title {
+  font-size:      0.78rem;
+  font-weight:    700;
+  color:          #f1f5f9;
+  white-space:    nowrap;
+  letter-spacing: .3px;
+  display:        block;
+}
+
+.vl-db-sidebar__brand-sub {
+  font-size:   0.62rem;
+  color:       var(--db-sidebar-muted);
+  white-space: nowrap;
+  display:     block;
+  transition:  color .4s ease;
+}
+
+/* ── Toggle ── */
+.vl-db-sidebar__toggle {
+  width:           30px;
+  height:          30px;
+  border-radius:   var(--vl-radius-sm);
+  background:      rgba(255,255,255,.07);
+  border:          none;
+  color:           var(--db-sidebar-text);
+  cursor:          pointer;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  font-size:       1rem;
+  flex-shrink:     0;
+  transition:      var(--vl-transition-fast);
+}
+
+.vl-db-sidebar__toggle:hover {
+  background: rgba(255,255,255,.13);
+  color:      #fff;
+}
+
+/* ── Nav ── */
+.vl-db-nav {
+  flex:            1;
+  overflow-y:      auto;
+  overflow-x:      hidden;
+  padding:         12px 8px;
+  display:         flex;
+  flex-direction:  column;
+  gap:             2px;
+}
+
+.vl-db-nav::-webkit-scrollbar { width: 0; }
+
+.vl-db-nav__label {
+  font-size:      0.62rem;
+  font-weight:    700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color:          var(--db-sidebar-muted);
+  padding:        14px 10px 6px;
+  white-space:    nowrap;
+  overflow:       hidden;
+}
+
+.vl-db-nav__link {
+  display:         flex;
+  align-items:     center;
+  gap:             10px;
+  padding:         9px 10px;
+  border-radius:   var(--vl-radius-sm);
+  text-decoration: none;
+  color:           var(--db-sidebar-text);
+  font-size:       0.82rem;
+  font-weight:     500;
+  white-space:     nowrap;
+  position:        relative;
+  transition:      var(--vl-transition-fast);
+  overflow:        hidden;
+}
+
+.vl-db-nav__link:hover {
+  background: var(--db-sidebar-hover);
+  color:      #fff;
+}
+
+.vl-db-nav__link.active {
+  background:  var(--db-sidebar-active);
+  color:       #fff;
+  font-weight: 600;
+}
+
+.vl-db-nav__link.active::before {
+  content:       '';
+  position:      absolute;
+  left:          0;
+  top:           20%;
+  height:        60%;
+  width:         3px;
+  background:    var(--db-sidebar-accent);
+  border-radius: 0 3px 3px 0;
+}
+
+.vl-db-nav__icon {
+  font-size:   1rem;
+  width:       20px;
+  text-align:  center;
+  flex-shrink: 0;
+  color:       var(--db-sidebar-accent);
+  transition:  color .4s ease;
+}
+
+.vl-db-nav__badge {
+  margin-left:   auto;
+  background:    var(--vl-rose);
+  color:         #fff;
+  font-size:     0.6rem;
+  font-weight:   700;
+  padding:       2px 6px;
+  border-radius: 99px;
+}
+
+/* ── Colapso ── */
+.vl-db-sidebar.collapsed .vl-db-sidebar__brand-title,
+.vl-db-sidebar.collapsed .vl-db-sidebar__brand-sub,
+.vl-db-sidebar.collapsed .vl-db-nav__label,
+.vl-db-sidebar.collapsed .vl-db-nav__link-text,
+.vl-db-sidebar.collapsed .vl-db-nav__badge,
+.vl-db-sidebar.collapsed .vl-db-footer__info {
+  opacity:  0;
+  width:    0;
+  overflow: hidden;
+}
+
+.vl-db-sidebar.collapsed .vl-db-nav__link {
+  justify-content: center;
+  padding:         10px;
+}
+
+/* ── Footer ── */
+.vl-db-sidebar__footer {
+  border-top:  1px solid rgba(255,255,255,.06);
+  padding:     8px;
+  flex-shrink: 0;
+}
+
+.vl-db-footer__config {
+  display:         flex;
+  align-items:     center;
+  gap:             10px;
+  padding:         8px 10px;
+  border-radius:   var(--vl-radius-sm);
+  text-decoration: none;
+  color:           var(--db-sidebar-muted);
+  font-size:       0.78rem;
+  font-weight:     500;
+  white-space:     nowrap;
+  transition:      var(--vl-transition-fast);
+  cursor:          pointer;
+  border:          none;
+  background:      transparent;
+  width:           100%;
+}
+
+.vl-db-footer__config:hover {
+  background: var(--db-sidebar-hover);
+  color:      #fff;
+}
+
+.vl-db-footer__config i {
+  font-size:   1rem;
+  width:       20px;
+  text-align:  center;
+  flex-shrink: 0;
+  color:       var(--db-sidebar-accent);
+}
+
+.vl-db-footer__divider {
+  height:     1px;
+  background: rgba(255,255,255,.06);
+  margin:     6px 0;
+}
+
+.vl-db-footer__user {
+  display:       flex;
+  align-items:   center;
+  gap:           10px;
+  padding:       8px 10px;
+  border-radius: var(--vl-radius-sm);
+  overflow:      hidden;
+}
+
+.vl-db-footer__avatar {
+  width:           34px;
+  height:          34px;
+  border-radius:   50%;
+  background:      var(--db-accent-gradient);
+  color:           #fff;
+  font-size:       0.8rem;
+  font-weight:     700;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  flex-shrink:     0;
+  transition:      background .4s ease;
+}
+
+.vl-db-footer__info {
+  overflow:   hidden;
+  flex:       1;
+  transition: opacity .2s ease, width .2s ease;
+}
+
+.vl-db-footer__name {
+  font-size:   0.78rem;
+  font-weight: 600;
+  color:       #e2e8f0;
+  white-space: nowrap;
+  display:     block;
+}
+
+.vl-db-footer__role {
+  font-size:   0.65rem;
+  color:       var(--db-sidebar-muted);
+  white-space: nowrap;
+  display:     block;
+}
+
+/* ── Responsive ── */
+@media (max-width: 991.98px) {
+  .vl-db-sidebar {
+    transform: translateX(-100%);
+    width:     var(--vl-sidebar-w) !important;
+    transition: transform .25s cubic-bezier(.4,0,.2,1);
+  }
+  .vl-db-sidebar.mobile-open { transform: translateX(0); }
+
+  .vl-db-sidebar .vl-db-sidebar__brand-title,
+  .vl-db-sidebar .vl-db-nav__label,
+  .vl-db-sidebar .vl-db-nav__link-text,
+  .vl-db-sidebar .vl-db-footer__info {
+    opacity: 1 !important;
+    width:   auto !important;
+  }
+  .vl-db-sidebar .vl-db-nav__link {
+    justify-content: flex-start !important;
+    padding:         9px 10px !important;
+  }
+}
+
+/* ============================================================
+   PREVIEW DE TEMAS
+   ============================================================ */
+.theme-preview {
+  border-radius: var(--vl-radius);
+  overflow:      hidden;
+  border:        2px solid transparent;
+  cursor:        pointer;
+  transition:    border-color .2s ease, transform .15s ease;
+}
+
+.theme-preview:hover  { transform: translateY(-2px); }
+.theme-preview.active { border-color: var(--vl-blue-500); }
+
+.theme-preview__sidebar {
+  height:         80px;
+  display:        flex;
+  flex-direction: column;
+  padding:        8px;
+  gap:            4px;
+}
+
+.theme-preview__bar {
+  height:        6px;
+  border-radius: 99px;
+  opacity:       .7;
+  width:         80%;
+}
+
+.theme-preview__bar.active { opacity: 1; width: 60%; }
+.theme-preview__bar.sm     { width: 45%; }
+.theme-preview__bar.md     { width: 70%; }
+
+.theme-preview__content {
+  background:  var(--vl-bg-card);
+  height:      40px;
+  padding:     6px 8px;
+  display:     flex;
+  gap:         4px;
+  align-items: center;
+}
+
+.theme-preview__dot {
+  width:         8px;
+  height:        8px;
+  border-radius: 50%;
+}
+
+.theme-preview__line {
+  height:        4px;
+  border-radius: 99px;
+  background:    var(--vl-border);
+  flex:          1;
+}
