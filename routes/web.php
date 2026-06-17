@@ -104,9 +104,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/admin/productos/{id}/reabastecer',
         [AdminController::class, 'reabastecerProducto'])->name('admin.productos.reabastecer');
 
-    // Estadísticas
-    Route::get('/admin/estadisticas',
-        [AdminController::class, 'estadisticas'])->name('admin.estadisticas');
 
     // Cambiar contraseña
     Route::post('/perfil/cambiar-password',
@@ -157,7 +154,4 @@ Route::middleware(['auth'])->group(function () {
         return redirect()->route('web.contacto')
             ->with('contacto_ok', true);
     })->name('web.contacto.post');
-    Route::get('/cuenta', [AdminController::class, 'cuenta'])->name('cuenta.index');
-    Route::get('/tema', [AdminController::class, 'tema'])->name('tema.index');
-    Route::get('/tema', [AdminController::class, 'tema'])->name('tema.index');
 });

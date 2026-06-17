@@ -320,14 +320,6 @@ class AdminController extends Controller
         return redirect()->route('admin.usuarios')
             ->with('success', 'Usuario eliminado del sistema.');
     }
-    public function cuenta()
-    {
-        return view('configuracion.tema');
-    }
-    public function tema()
-    {
-        return view('configuracion.tema');
-    }
     /* ============================================================
        12. ENTREGAS — Guardar
        POST /admin/entregas/guardar
@@ -510,14 +502,6 @@ class AdminController extends Controller
             ->with('success', 'Stock actualizado: +' . $request->cantidad . ' ' . $producto->unidad_medida . ' para ' . $producto->nombre . '.');
     }
 
-    /* ============================================================
-       18. ESTADÍSTICAS
-       GET /admin/estadisticas
-       ============================================================ */
-    public function estadisticas()
-    {
-        return redirect()->route('dashboard.index');
-    }
 
     /* ============================================================
        19. CAMBIAR CONTRASEÑA
