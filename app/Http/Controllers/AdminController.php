@@ -213,7 +213,7 @@ class AdminController extends Controller
         $beneficiario->delete();
 
         return redirect()->route('admin.beneficiarios')
-            ->with('success', 'Beneficiario eliminado permanentemente del padrón.');
+            ->with('success', 'Beneficiario enviado a la papelera. Puede restaurarlo desde Administración → Papelera.');
     }
 
     /* ============================================================
@@ -531,6 +531,71 @@ class AdminController extends Controller
     public function cuenta()
     {
         return view('configuracion.cuenta');
+    }
+    /* ============================================================
+       PAPELERA — Solo maestro
+       GET /admin/papelera
+       ============================================================ */
+    public function papelera()
+    {
+        if (Auth::user()->rol !== 'maestro') {
+            return redirect()->route('admin.dashboard')->with('error', 'Acceso restringido.');
+        }
+
+        $beneficiarios = Beneficiario::onlyTrashed()->orderByDesc('deleted_at')->get();
+        $productos     = Producto::onlyTrashed()->orderByDesc('deleted_at')->get();
+        $entregas      = Entrega::onlyTrashed()
+                            ->with(['beneficiario' => fn($q) => $q->withTrashed(),
+                                    'producto'     => fn($q) => $q->withTrashed(),
+                                    'user'])
+                            ->orderByDesc('deleted_at')->get();
+
+        return view('admin.papelera', compact('beneficiarios', 'productos', 'entregas'));
+    }
+
+    /* ── Restaurar beneficiario ── */
+    public function restaurarBeneficiario($id)
+    {
+        if (Auth::user()->rol !== 'maestro') {
+            return redirect()->back()->with('error', 'Acceso restringido.');
+        }
+        $b = Beneficiario::onlyTrashed()->findOrFail($id);
+        $b->restore();
+        ActividadLog::registrar(
+            'BENEFICIARIO_RESTAURADO',
+            'Se restauró desde la papelera a: ' . $b->nombre . ' ' . $b->apellido . ' (DNI: ' . $b->dni . ')'
+        );
+        return redirect()->route('admin.papelera')->with('success', $b->nombre . ' ' . $b->apellido . ' restaurado correctamente.');
+    }
+
+    /* ── Restaurar producto ── */
+    public function restaurarProducto($id)
+    {
+        if (Auth::user()->rol !== 'maestro') {
+            return redirect()->back()->with('error', 'Acceso restringido.');
+        }
+        $p = Producto::onlyTrashed()->findOrFail($id);
+        $p->restore();
+        ActividadLog::registrar(
+            'PRODUCTO_RESTAURADO',
+            'Se restauró desde la papelera el producto: ' . $p->nombre
+        );
+        return redirect()->route('admin.papelera')->with('success', 'Producto "' . $p->nombre . '" restaurado correctamente.');
+    }
+
+    /* ── Restaurar entrega ── */
+    public function restaurarEntrega($id)
+    {
+        if (Auth::user()->rol !== 'maestro') {
+            return redirect()->back()->with('error', 'Acceso restringido.');
+        }
+        $e = Entrega::onlyTrashed()->findOrFail($id);
+        $e->restore();
+        ActividadLog::registrar(
+            'ENTREGA_RESTAURADA',
+            'Se restauró desde la papelera una entrega del ' . \Carbon\Carbon::parse($e->fecha_entrega)->format('d/m/Y')
+        );
+        return redirect()->route('admin.papelera')->with('success', 'Entrega restaurada correctamente.');
     }
     /* ============================================================
        MI ACTIVIDAD — Historial personal (cualquier rol, solo lectura)

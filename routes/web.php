@@ -156,4 +156,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/cuenta', [AdminController::class, 'cuenta'])->name('cuenta.index');
     Route::get('/admin/mi-actividad', [AdminController::class, 'miActividad'])->name('admin.mi-actividad');
+
+    // Papelera — solo maestro
+    Route::get('/admin/papelera', [AdminController::class, 'papelera'])->name('admin.papelera');
+    Route::patch('/admin/beneficiarios/{id}/restaurar', [AdminController::class, 'restaurarBeneficiario'])->name('admin.beneficiarios.restaurar');
+    Route::patch('/admin/productos/{id}/restaurar', [AdminController::class, 'restaurarProducto'])->name('admin.productos.restaurar');
+    Route::patch('/admin/entregas/{id}/restaurar', [AdminController::class, 'restaurarEntrega'])->name('admin.entregas.restaurar');
 });

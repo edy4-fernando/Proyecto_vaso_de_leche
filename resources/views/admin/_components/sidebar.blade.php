@@ -72,6 +72,13 @@
         <i class="bi bi-box-seam vl-nav__icon"></i>
         <span class="vl-nav__link-text">Inventario</span>
       </a>
+      <a href="{{ route('admin.papelera') }}"
+         class="vl-nav__link {{ ($activeModule ?? '') === 'papelera' ? 'active' : '' }}"
+         data-bs-toggle="tooltip" data-bs-placement="right"
+         title="Papelera de registros eliminados">
+        <i class="bi bi-trash3-fill vl-nav__icon"></i>
+        <span class="vl-nav__link-text">Papelera</span>
+      </a>
 
       <a href="{{ route('admin.usuarios') }}"
          class="vl-nav__link danger {{ ($activeModule ?? '') === 'usuarios' ? 'active' : '' }}"
