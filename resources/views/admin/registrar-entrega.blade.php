@@ -184,7 +184,7 @@
                 <th>DNI</th>
                 <th>Producto</th>
                 <th>Cant.</th>
-                <th>Operador</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -221,9 +221,21 @@
                     <span class="vl-badge vl-badge--blue">{{ $e->cantidad }}</span>
                   </td>
                   <td>
-                    <span style="font-size:.75rem; color:var(--vl-text-muted);">
-                      {{ $e->user->name ?? 'Sistema' }}
-                    </span>
+                    <button type="button"
+                            class="vl-btn vl-btn--ghost vl-btn--sm"
+                            style="font-size:.72rem;"
+                            onclick="vlVerEntrega(
+                              '{{ strtoupper($e->beneficiario->apellido ?? '') }}, {{ $e->beneficiario->nombre ?? '—' }}',
+                              '{{ $e->beneficiario->dni ?? '—' }}',
+                              '{{ $e->fecha_entrega }}',
+                              '{{ $e->hora_entrega ?? '' }}',
+                              '{{ $e->producto->nombre ?? 'Ración general' }}',
+                              '{{ $e->cantidad }}',
+                              '{{ $e->user->name ?? '—' }}',
+                              '{{ addslashes($e->observaciones_incidencias ?? '') }}'
+                            )">
+                      <i class="bi bi-eye-fill me-1"></i>Detalles
+                    </button>
                   </td>
                 </tr>
               @empty
@@ -246,3 +258,84 @@
 </div>
 
 @endsection
+
+@section('modals')
+<div class="modal fade vl-modal" id="modalDetalleEntrega" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi bi-journal-check text-primary me-2"></i>
+          Detalle de Entrega
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div style="display:flex; justify-content:space-between; padding:10px 14px;
+                      background:var(--vl-bg-body); border-radius:var(--vl-radius);">
+            <span style="font-size:.75rem; color:var(--vl-text-muted);">Beneficiario</span>
+            <span style="font-size:.8rem; font-weight:700;" id="de-beneficiario"></span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:10px 14px;
+                      background:var(--vl-bg-body); border-radius:var(--vl-radius);">
+            <span style="font-size:.75rem; color:var(--vl-text-muted);">DNI</span>
+            <span style="font-size:.8rem; font-weight:700;" id="de-dni"></span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:10px 14px;
+                      background:var(--vl-bg-body); border-radius:var(--vl-radius);">
+            <span style="font-size:.75rem; color:var(--vl-text-muted);">Fecha</span>
+            <span style="font-size:.8rem; font-weight:700;" id="de-fecha"></span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:10px 14px;
+                      background:var(--vl-bg-body); border-radius:var(--vl-radius);">
+            <span style="font-size:.75rem; color:var(--vl-text-muted);">Hora</span>
+            <span style="font-size:.8rem; font-weight:700;" id="de-hora"></span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:10px 14px;
+                      background:var(--vl-bg-body); border-radius:var(--vl-radius);">
+            <span style="font-size:.75rem; color:var(--vl-text-muted);">Producto</span>
+            <span style="font-size:.8rem; font-weight:700;" id="de-producto"></span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:10px 14px;
+                      background:var(--vl-bg-body); border-radius:var(--vl-radius);">
+            <span style="font-size:.75rem; color:var(--vl-text-muted);">Cantidad</span>
+            <span style="font-size:.8rem; font-weight:700;" id="de-cantidad"></span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:10px 14px;
+                      background:var(--vl-bg-body); border-radius:var(--vl-radius);">
+            <span style="font-size:.75rem; color:var(--vl-text-muted);">Operador</span>
+            <span style="font-size:.8rem; font-weight:700;" id="de-operador"></span>
+          </div>
+          <div id="de-obs-wrap" style="padding:10px 14px;
+                      background:var(--vl-bg-body); border-radius:var(--vl-radius);">
+            <span style="font-size:.75rem; color:var(--vl-text-muted); display:block; margin-bottom:4px;">Observaciones</span>
+            <span style="font-size:.8rem;" id="de-obs"></span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="vl-btn vl-btn--outline" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+@endsection
+
+@push('scripts')
+<script>
+function vlVerEntrega(beneficiario, dni, fecha, hora, producto, cantidad, operador, obs) {
+  document.getElementById('de-beneficiario').textContent = beneficiario;
+  document.getElementById('de-dni').textContent          = dni;
+  document.getElementById('de-fecha').textContent        = fecha;
+  document.getElementById('de-hora').textContent         = hora || '—';
+  document.getElementById('de-producto').textContent     = producto;
+  document.getElementById('de-cantidad').textContent     = cantidad;
+  document.getElementById('de-operador').textContent     = operador;
+  const obsWrap = document.getElementById('de-obs-wrap');
+  document.getElementById('de-obs').textContent = obs;
+  obsWrap.style.display = obs ? '' : 'none';
+  new bootstrap.Modal(document.getElementById('modalDetalleEntrega')).show();
+}
+</script>
+@endpush

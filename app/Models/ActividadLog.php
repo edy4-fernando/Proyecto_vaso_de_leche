@@ -16,10 +16,12 @@ class ActividadLog extends Model
         'accion',
         'descripcion',
         'ip',
+        'metadata',
     ];
 
     protected $casts = [
         'created_at' => 'datetime',
+        'metadata'   => 'array',
     ];
 
     /* ── Relación con usuario ── */
@@ -29,13 +31,14 @@ class ActividadLog extends Model
     }
 
     /* ── Registrar actividad estáticamente ── */
-    public static function registrar(string $accion, string $descripcion): void
+    public static function registrar(string $accion, string $descripcion, array $metadata = []): void
     {
         static::create([
             'user_id'     => Auth::id(),
             'accion'      => $accion,
             'descripcion' => $descripcion,
             'ip'          => request()->ip(),
+            'metadata'    => !empty($metadata) ? $metadata : null,
         ]);
     }
 }

@@ -184,9 +184,38 @@ class AdminController extends Controller
             'dni_apoderado'         => $request->dni_apoderado,
             'observaciones_medicas' => $request->observaciones_medicas,
         ]);
+        // Capturar cambios antes de guardar
+        $etiquetas = [
+            'nombre'               => 'Nombre',
+            'apellido'             => 'Apellido',
+            'dni'                  => 'DNI',
+            'fecha_nacimiento'     => 'Fecha nacimiento',
+            'direccion'            => 'Dirección',
+            'telefono'             => 'Teléfono',
+            'tipo_beneficiario'    => 'Tipo',
+            'sector_o_comite'      => 'Sector / Comité',
+            'nombre_apoderado'     => 'Apoderado',
+            'dni_apoderado'        => 'DNI apoderado',
+            'observaciones_medicas'=> 'Obs. médicas',
+        ];
+
+        $cambios = [];
+        foreach ($etiquetas as $campo => $label) {
+            $viejo = $beneficiario->$campo ?? '';
+            $nuevo = $request->$campo ?? '';
+            if (strtolower(trim((string)$viejo)) !== strtolower(trim((string)$nuevo))) {
+                $cambios[] = [
+                    'campo'  => $label,
+                    'antes'  => $viejo ?: '—',
+                    'despues'=> $nuevo ?: '—',
+                ];
+            }
+        }
+
         ActividadLog::registrar(
             'BENEFICIARIO_EDITADO',
-            'Se modificaron datos de: ' . $beneficiario->nombre . ' ' . $beneficiario->apellido . ' (DNI: ' . $beneficiario->dni . ')'
+            'Se modificaron datos de: ' . strtoupper($request->nombre) . ' ' . strtoupper($request->apellido) . ' (DNI: ' . $request->dni . ')',
+            ['cambios' => $cambios]
         );
 
         return redirect()->route('admin.beneficiarios')
@@ -391,6 +420,7 @@ class AdminController extends Controller
             ->orderByDesc('fecha_entrega')
             ->orderByDesc('created_at');
 
+        // Búsqueda por nombre/DNI
         if ($request->q) {
             $q = $request->q;
             $query->whereHas('beneficiario', function ($sub) use ($q) {
@@ -400,17 +430,40 @@ class AdminController extends Controller
             });
         }
 
+        // Rango de fechas
         if ($request->desde) {
             $query->whereDate('fecha_entrega', '>=', $request->desde);
         }
-
         if ($request->hasta) {
             $query->whereDate('fecha_entrega', '<=', $request->hasta);
         }
 
-        $entregas = $query->paginate(20);
+        // Filtro por producto específico
+        if ($request->producto_id) {
+            if ($request->producto_id === 'general') {
+                $query->whereNull('producto_id');
+            } else {
+                $query->where('producto_id', $request->producto_id);
+            }
+        }
 
-        return view('admin.entregas', compact('entregas'));
+        // Filtro por tipo de beneficiario
+        if ($request->tipo_beneficiario) {
+            $query->whereHas('beneficiario', function ($sub) use ($request) {
+                $sub->where('tipo_beneficiario', $request->tipo_beneficiario);
+            });
+        }
+
+        // Filtro por operador
+        if ($request->operador_id) {
+            $query->where('user_id', $request->operador_id);
+        }
+
+        $entregas  = $query->paginate(20)->withQueryString();
+        $productos = Producto::orderBy('nombre')->get();
+        $operadores = User::orderBy('name')->get();
+
+        return view('admin.entregas', compact('entregas', 'productos', 'operadores'));
     }
 
     /* ============================================================
@@ -768,7 +821,7 @@ class AdminController extends Controller
         // ── Entregas en rango seleccionado ──
         $entregasRango = Entrega::whereBetween('created_at', [$desde, $hasta])->count();
 
-        return view('dashboard.estadisticas', compact(
+        return view('dashboard.estadisticas.index', compact(
             'totalBeneficiarios', 'totalActivos', 'totalInactivos',
             'totalEntregas', 'totalProductos', 'stockCritico', 'entregasHoy',
             'ultimos7Dias', 'ultimos6Meses', 'acumulado', 'porDiaSemana',
@@ -885,24 +938,31 @@ class AdminController extends Controller
             $query->whereDate('created_at', '<=', request()->hasta);
         }
 
-        $actividad       = $query->paginate(25);
-        $totalActividad  = \App\Models\ActividadLog::count();
-        $actividadHoy    = \App\Models\ActividadLog::whereDate('created_at', today())->count();
-        $usuariosActivos = \App\Models\ActividadLog::whereDate('created_at', today())
-                            ->distinct('user_id')->count('user_id');
+        // Filtro por operador
+        if (request()->operador_id) {
+            $query->where('user_id', request()->operador_id);
+        }
+
+        $actividad        = $query->paginate(25);
+        $totalActividad   = \App\Models\ActividadLog::count();
+        $actividadHoy     = \App\Models\ActividadLog::whereDate('created_at', today())->count();
+        $usuariosActivos  = \App\Models\ActividadLog::whereDate('created_at', today())
+                             ->distinct('user_id')->count('user_id');
         $accionesCriticas = \App\Models\ActividadLog::whereIn('accion', [
             'BENEFICIARIO_ELIMINADO',
             'USUARIO_ELIMINADO',
             'PRODUCTO_ELIMINADO',
             'BENEFICIARIO_DADO_DE_BAJA',
         ])->whereDate('created_at', today())->count();
+        $operadores = \App\Models\User::orderBy('name')->get();
 
         return view('dashboard.actividad', compact(
             'actividad',
             'totalActividad',
             'actividadHoy',
             'usuariosActivos',
-            'accionesCriticas'
+            'accionesCriticas',
+            'operadores'
         ));
     }
 

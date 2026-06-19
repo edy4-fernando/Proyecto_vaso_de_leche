@@ -79,6 +79,6 @@ class AsistenciaController extends Controller
         $beneficiario = Beneficiario::findOrFail($id);
         $totalRaciones = \App\Models\Entrega::where('beneficiario_id', $id)->count();
 
-       return view('publico.bienvenida', compact('beneficiario'));
+       return view('publico.bienvenida', compact('beneficiario', 'totalRaciones'));
     }
 }

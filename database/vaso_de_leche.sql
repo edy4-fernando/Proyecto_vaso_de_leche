@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 19-06-2026 a las 06:09:05
+-- Tiempo de generación: 19-06-2026 a las 08:56:27
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -33,6 +33,7 @@ CREATE TABLE `actividad_logs` (
   `accion` varchar(255) NOT NULL,
   `descripcion` text DEFAULT NULL,
   `ip` varchar(45) DEFAULT NULL,
+  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`metadata`)),
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -41,17 +42,27 @@ CREATE TABLE `actividad_logs` (
 -- Volcado de datos para la tabla `actividad_logs`
 --
 
-INSERT INTO `actividad_logs` (`id`, `user_id`, `accion`, `descripcion`, `ip`, `created_at`, `updated_at`) VALUES
-(1, 1, 'ENTREGA_REGISTRADA', 'Entrega registrada para: HALBER DAVID CCAPCHI RIOS (DNI: 73392625)', '127.0.0.1', '2026-06-16 20:19:41', '2026-06-16 20:19:41'),
-(2, 1, 'ENTREGA_REGISTRADA', 'Entrega registrada para: HALBER DAVID CCAPCHI RIOS (DNI: 73392625)', '127.0.0.1', '2026-06-16 20:19:41', '2026-06-16 20:19:41'),
-(3, 1, 'ENTREGA_REGISTRADA', 'Entrega registrada para: HALBER DAVID CCAPCHI RIOS (DNI: 73392625)', '127.0.0.1', '2026-06-16 20:19:41', '2026-06-16 20:19:41'),
-(4, 1, 'ENTREGA_REGISTRADA', 'Entrega registrada para: HALBER DAVID CCAPCHI RIOS (DNI: 73392625)', '127.0.0.1', '2026-06-16 20:19:56', '2026-06-16 20:19:56'),
-(5, 1, 'BENEFICIARIO_EDITADO', 'Se modificaron datos de: HALBER DAVID CCAPCHI RIOS (DNI: 73392625)', '127.0.0.1', '2026-06-16 20:20:25', '2026-06-16 20:20:25'),
-(6, 1, 'BENEFICIARIO_DADO_DE_BAJA', 'Se dio de baja a: HALBER DAVID CCAPCHI RIOS (DNI: 73392625)', '127.0.0.1', '2026-06-16 22:54:30', '2026-06-16 22:54:30'),
-(7, 1, 'BENEFICIARIO_DADO_DE_BAJA', 'Se dio de baja a: PEDRO CCAPCHI VARGAS (DNI: 45678901)', '127.0.0.1', '2026-06-16 22:55:32', '2026-06-16 22:55:32'),
-(8, 1, 'BENEFICIARIO_DADO_DE_BAJA', 'Se dio de baja a: LUCIANA CCORIMANYA CRUZ (DNI: 60708090)', '127.0.0.1', '2026-06-16 22:55:38', '2026-06-16 22:55:38'),
-(9, 1, 'EMAIL_ACTUALIZADO', 'El usuario Administrador cambió su correo de admin@vasodeleche.gob.pe a admin@vasodeleche.gob.pe', '127.0.0.1', '2026-06-17 22:42:27', '2026-06-17 22:42:27'),
-(10, 1, 'BENEFICIARIO_REACTIVADO', 'Se reactivó a: HALBER DAVID CCAPCHI RIOS (DNI: 73392625)', '127.0.0.1', '2026-06-19 03:35:53', '2026-06-19 03:35:53');
+INSERT INTO `actividad_logs` (`id`, `user_id`, `accion`, `descripcion`, `ip`, `metadata`, `created_at`, `updated_at`) VALUES
+(1, 1, 'ENTREGA_REGISTRADA', 'Entrega registrada para: HALBER DAVID CCAPCHI RIOS (DNI: 73392625)', '127.0.0.1', NULL, '2026-06-16 20:19:41', '2026-06-16 20:19:41'),
+(2, 1, 'ENTREGA_REGISTRADA', 'Entrega registrada para: HALBER DAVID CCAPCHI RIOS (DNI: 73392625)', '127.0.0.1', NULL, '2026-06-16 20:19:41', '2026-06-16 20:19:41'),
+(3, 1, 'ENTREGA_REGISTRADA', 'Entrega registrada para: HALBER DAVID CCAPCHI RIOS (DNI: 73392625)', '127.0.0.1', NULL, '2026-06-16 20:19:41', '2026-06-16 20:19:41'),
+(4, 1, 'ENTREGA_REGISTRADA', 'Entrega registrada para: HALBER DAVID CCAPCHI RIOS (DNI: 73392625)', '127.0.0.1', NULL, '2026-06-16 20:19:56', '2026-06-16 20:19:56'),
+(5, 1, 'BENEFICIARIO_EDITADO', 'Se modificaron datos de: HALBER DAVID CCAPCHI RIOS (DNI: 73392625)', '127.0.0.1', NULL, '2026-06-16 20:20:25', '2026-06-16 20:20:25'),
+(6, 1, 'BENEFICIARIO_DADO_DE_BAJA', 'Se dio de baja a: HALBER DAVID CCAPCHI RIOS (DNI: 73392625)', '127.0.0.1', NULL, '2026-06-16 22:54:30', '2026-06-16 22:54:30'),
+(7, 1, 'BENEFICIARIO_DADO_DE_BAJA', 'Se dio de baja a: PEDRO CCAPCHI VARGAS (DNI: 45678901)', '127.0.0.1', NULL, '2026-06-16 22:55:32', '2026-06-16 22:55:32'),
+(8, 1, 'BENEFICIARIO_DADO_DE_BAJA', 'Se dio de baja a: LUCIANA CCORIMANYA CRUZ (DNI: 60708090)', '127.0.0.1', NULL, '2026-06-16 22:55:38', '2026-06-16 22:55:38'),
+(9, 1, 'EMAIL_ACTUALIZADO', 'El usuario Administrador cambió su correo de admin@vasodeleche.gob.pe a admin@vasodeleche.gob.pe', '127.0.0.1', NULL, '2026-06-17 22:42:27', '2026-06-17 22:42:27'),
+(10, 1, 'BENEFICIARIO_REACTIVADO', 'Se reactivó a: HALBER DAVID CCAPCHI RIOS (DNI: 73392625)', '127.0.0.1', NULL, '2026-06-19 03:35:53', '2026-06-19 03:35:53'),
+(11, 3, 'BENEFICIARIO_EDITADO', 'Se modificaron datos de: ROBERTA APAZA CCORIMANYA (DNI: 67890123)', '127.0.0.1', NULL, '2026-06-19 04:12:22', '2026-06-19 04:12:22'),
+(12, 1, 'BENEFICIARIO_EDITADO', 'Se modificaron datos de: ROBERTO APAZA CCORIMANYA (DNI: 67890123)', '127.0.0.1', NULL, '2026-06-19 04:13:12', '2026-06-19 04:13:12'),
+(13, 1, 'BENEFICIARIO_ELIMINADO', 'Se eliminó permanentemente a: ROBERTO APAZA CCORIMANYA (DNI: 67890123)', '127.0.0.1', NULL, '2026-06-19 04:14:32', '2026-06-19 04:14:32'),
+(14, 1, 'BENEFICIARIO_RESTAURADO', 'Se restauró desde la papelera a: ROBERTO APAZA CCORIMANYA (DNI: 67890123)', '127.0.0.1', NULL, '2026-06-19 04:14:41', '2026-06-19 04:14:41'),
+(15, 1, 'BENEFICIARIO_EDITADO', 'Se modificaron datos de: ROBERTO APAZA CCORIMANYA (DNI: 67890123)', '127.0.0.1', NULL, '2026-06-19 04:22:30', '2026-06-19 04:22:30'),
+(16, 1, 'USUARIO_ELIMINADO', 'Se eliminó el usuario: HALBER DAVID CCAPCHI RIOS (halberdavid2005@gmail.com)', '127.0.0.1', NULL, '2026-06-19 06:34:02', '2026-06-19 06:34:02'),
+(17, 1, 'USUARIO_CREADO', 'Se creó el usuario: HALBER DAVID CCAPCHI RIOS (halberdavid2005@gmail.com) con rol: trabajador', '127.0.0.1', NULL, '2026-06-19 06:35:38', '2026-06-19 06:35:38'),
+(18, 4, 'BENEFICIARIO_CREADO', 'Se registró al beneficiario: ANA TORRES HUMAN QUISPE (DNI: 11111111)', '127.0.0.1', NULL, '2026-06-19 06:40:10', '2026-06-19 06:40:10'),
+(19, 4, 'ENTREGA_REGISTRADA', 'Entrega registrada para: HALBER DAVID CCAPCHI RIOS (DNI: 73392625)', '127.0.0.1', NULL, '2026-06-19 06:40:28', '2026-06-19 06:40:28'),
+(20, 4, 'BENEFICIARIO_EDITADO', 'Se modificaron datos de: ROBERTO APAZA CCORIMANYA (DNI: 67890124)', '127.0.0.1', '{\"cambios\":[{\"campo\":\"Fecha nacimiento\",\"antes\":\"2016-12-18T00:00:00.000000Z\",\"despues\":\"2016-12-18\"}]}', '2026-06-19 06:51:00', '2026-06-19 06:51:00');
 
 -- --------------------------------------------------------
 
@@ -89,7 +100,7 @@ INSERT INTO `beneficiarios` (`id`, `dni`, `nombre`, `apellido`, `fecha_nacimient
 (4, '34567890', 'LUCIA', 'HUANCA QUISPE', '1985-11-10', 'CALLE SAPHI 789 - CUSCO', '984111003', 'gestante', 'COMITÉ 03 - BELÉN', NULL, NULL, 1, 'Control prenatal activo', '2026-06-16 15:15:19', '2026-06-16 15:15:19', NULL),
 (5, '45678901', 'PEDRO', 'CCAPCHI VARGAS', '1945-05-20', 'AV. TULLUMAYO 321 - CUSCO', '984111004', 'adulto mayor', 'COMITÉ 01 - SAN BLAS', NULL, NULL, 0, NULL, '2026-06-16 15:15:19', '2026-06-16 22:55:32', NULL),
 (6, '56789012', 'SOFIA', 'TTITO HUALLPA', '2021-09-03', 'JR. MARURI 654 - CUSCO', '984111005', 'niño 0-6', 'COMITÉ 04 - TTIO', 'JUAN HUALLPA', '67890123', 1, NULL, '2026-06-16 15:15:19', '2026-06-16 15:15:19', NULL),
-(7, '67890123', 'ROBERTO', 'APAZA CCORIMANYA', '2016-12-18', 'CALLE RUINAS 987 - CUSCO', '984111006', 'niño 7-13', 'COMITÉ 02 - SANTA ANA', 'ELENA CCORIMANYA', '78901234', 1, NULL, '2026-06-16 15:15:19', '2026-06-16 15:15:19', NULL),
+(7, '67890124', 'ROBERTO', 'APAZA CCORIMANYA', '2016-12-18', 'CALLE RUINAS 987 - CUSCO', '984111006', 'niño 7-13', 'COMITÉ 02 - SANTA ANA', 'ELENA CCORIMANYA', '78901234', 1, NULL, '2026-06-16 15:15:19', '2026-06-19 06:51:00', NULL),
 (8, '78901234', 'ELENA', 'CCORIMANYA ROCA', '1978-04-25', 'AV. LA CULTURA 147 - CUSCO', '984111007', 'lactante', 'COMITÉ 05 - ZARZUELA', NULL, NULL, 1, 'Post parto 2 meses', '2026-06-16 15:15:19', '2026-06-16 15:15:19', NULL),
 (9, '89012345', 'MIGUEL', 'HUILLCA TORRES', '2019-08-14', 'JR. AYACUCHO 258 - CUSCO', '984111008', 'niño 0-6', 'COMITÉ 03 - BELÉN', 'CARMEN TORRES', '90123456', 1, NULL, '2026-06-16 15:15:19', '2026-06-16 15:15:19', NULL),
 (10, '90123456', 'CARMEN', 'TORRES PUMAYALLI', '1952-01-30', 'CALLE LORETO 369 - CUSCO', '984111009', 'adulto mayor', 'COMITÉ 04 - TTIO', NULL, NULL, 1, 'Hipertensión controlada', '2026-06-16 15:15:19', '2026-06-16 15:15:19', NULL),
@@ -108,7 +119,8 @@ INSERT INTO `beneficiarios` (`id`, `dni`, `nombre`, `apellido`, `fecha_nacimient
 (23, '30405060', 'MARCO', 'HUALLPA VARGAS', '2014-02-11', 'AV. REGIONAL 234 - CUSCO', '984111022', 'niño 7-13', 'COMITÉ 11 - SAYLLA', 'VALENTINA VARGAS', '40506070', 1, NULL, '2026-06-16 15:15:19', '2026-06-16 15:15:19', NULL),
 (24, '40506070', 'GIULIANA', 'TTITO FLORES', '2022-08-19', 'JR. ALMUDENA 345 - CUSCO', '984111023', 'niño 0-6', 'COMITÉ 11 - SAYLLA', 'MARCO FLORES', '50607080', 1, NULL, '2026-06-16 15:15:19', '2026-06-16 15:15:19', NULL),
 (25, '50607080', 'RAFAEL', 'APAZA MAMANI', '1943-11-03', 'CALLE AREQUIPA 456 - CUSCO', '984111024', 'adulto mayor', 'COMITÉ 12 - CCORCA', NULL, NULL, 0, NULL, '2026-06-16 15:15:19', '2026-06-16 15:15:19', NULL),
-(26, '60708090', 'LUCIANA', 'CCORIMANYA CRUZ', '1975-09-14', 'AV. MANCO CAPAC 567 - CUSCO', '984111025', 'tbc', 'COMITÉ 12 - CCORCA', NULL, NULL, 0, 'Tratamiento DOTS activo', '2026-06-16 15:15:19', '2026-06-16 22:55:38', NULL);
+(26, '60708090', 'LUCIANA', 'CCORIMANYA CRUZ', '1975-09-14', 'AV. MANCO CAPAC 567 - CUSCO', '984111025', 'tbc', 'COMITÉ 12 - CCORCA', NULL, NULL, 0, 'Tratamiento DOTS activo', '2026-06-16 15:15:19', '2026-06-16 22:55:38', NULL),
+(27, '11111111', 'ANA TORRES', 'HUMAN QUISPE', '2005-02-03', 'JR.LAS GARDENIAS I-19', '914071918', 'gestante', 'COMITE 12', NULL, NULL, 1, NULL, '2026-06-19 06:40:10', '2026-06-19 06:40:10', NULL);
 
 -- --------------------------------------------------------
 
@@ -225,7 +237,11 @@ INSERT INTO `entregas` (`id`, `beneficiario_id`, `user_id`, `producto_id`, `fech
 (95, 1, 1, NULL, '2026-06-16', '20:19:56', 1, NULL, '2026-06-16 20:19:56', '2026-06-16 20:19:56', NULL),
 (96, 8, 1, 8, '2026-06-16', '22:55:53', 1, NULL, '2026-06-16 22:55:53', '2026-06-16 22:55:53', NULL),
 (97, 19, 1, 8, '2026-06-16', '22:58:43', 1, NULL, '2026-06-16 22:58:43', '2026-06-16 22:58:43', NULL),
-(98, 12, 1, 8, '2026-06-16', '23:10:25', 1, NULL, '2026-06-16 23:10:25', '2026-06-16 23:10:25', NULL);
+(98, 12, 1, 8, '2026-06-16', '23:10:25', 1, NULL, '2026-06-16 23:10:25', '2026-06-16 23:10:25', NULL),
+(99, 1, 4, NULL, '2026-06-19', '06:40:28', 1, NULL, '2026-06-19 06:40:28', '2026-06-19 06:40:28', NULL),
+(100, 22, 1, 8, '2026-06-19', '06:40:46', 1, NULL, '2026-06-19 06:40:46', '2026-06-19 06:40:46', NULL),
+(101, 2, 1, 8, '2026-06-19', '06:42:06', 1, NULL, '2026-06-19 06:42:06', '2026-06-19 06:42:06', NULL),
+(102, 18, 1, 8, '2026-06-19', '06:45:05', 1, NULL, '2026-06-19 06:45:05', '2026-06-19 06:45:05', NULL);
 
 -- --------------------------------------------------------
 
@@ -254,6 +270,18 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) NOT NULL,
   `batch` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `migrations`
+--
+
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
+(1, '2026_06_19_000001_add_metadata_to_actividad_logs', 1),
+(2, '0001_01_01_000000_create_users_table', 1),
+(3, '0001_01_01_000001_create_cache_table', 1),
+(4, '0001_01_01_000002_create_jobs_table', 1),
+(5, '2026_06_18_100000_add_soft_deletes', 1),
+(6, '2026_06_19_000001_add_metadata_to_actividad_logs', 2);
 
 -- --------------------------------------------------------
 
@@ -299,7 +327,7 @@ INSERT INTO `productos` (`id`, `tipo_insumo`, `nombre`, `marca`, `numero_lote`, 
 (5, 'cereal', 'MEZCLA DE CEREALES', 'NUTRIFORT', 'LOT-2026-004', '2026-09-30', 'kg', 45, 20, '2026-06-16 15:15:19', '2026-06-16 15:15:19', NULL),
 (6, 'vitamina', 'SUPLEMENTO VITAMÍNICO', 'CENTRO', 'LOT-2026-005', '2026-08-15', 'unidad', 30, 5, '2026-06-16 15:15:19', '2026-06-16 15:15:19', NULL),
 (7, 'legumbre', 'QUINUA', 'INCA', 'LOT-2026-006', '2027-01-20', 'kg', 60, 10, '2026-06-16 15:15:19', '2026-06-16 15:15:19', NULL),
-(8, 'cereal', 'HARINA DE MAÍZ', 'MOLICENTRO', 'LOT-2026-007', '2026-07-31', 'kg', 5, 15, '2026-06-16 15:15:19', '2026-06-16 23:10:25', NULL),
+(8, 'cereal', 'HARINA DE MAÍZ', 'MOLICENTRO', 'LOT-2026-007', '2026-07-31', 'kg', 2, 15, '2026-06-16 15:15:19', '2026-06-19 06:45:05', NULL),
 (9, 'lacteo', 'LECHE UHT', 'LAIVE', 'LOT-2026-008', '2026-08-01', 'unidad', 12, 25, '2026-06-16 15:15:19', '2026-06-16 15:15:19', NULL);
 
 -- --------------------------------------------------------
@@ -322,8 +350,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('DMVA8vUzBkkvoq5NQj2fl5O5tgSSCAexfCj8Tl97', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiYXNRSmx3Q08yTFdIUG5lN2Q1OWRJSEpZWU9jeWdiYk9nTWZzT0RvMiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9taS1hY3RpdmlkYWQiO3M6NToicm91dGUiO3M6MTg6ImFkbWluLm1pLWFjdGl2aWRhZCI7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7fQ==', 1781840163),
-('ffQkoB1XwpZaJecWxp1tJMTL58a9PUHOjGiD12FH', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.124.2 Chrome/148.0.7778.97 Electron/42.2.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiR2FUWFk5NzNrUWZiZ0lHd0hWR0Jnc0tHb1ozaVNBak9pSUF3dkI1SCI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hc2lzdGVuY2lhIjtzOjU6InJvdXRlIjtzOjE2OiJhc2lzdGVuY2lhLmluZGV4Ijt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1781839713);
+('Sj4rlaVlW38bmo04OwLBXC8LijA5yeLD7NF6oj9q', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiZDJrQ1gycTVNRGVGZUhMQllHQlIzUE5jWDFJZHRYQ1JCOWp0SlpCUSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9kYXNoYm9hcmQiO3M6NToicm91dGUiO3M6MTU6ImRhc2hib2FyZC5pbmRleCI7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7fQ==', 1781852157);
 
 -- --------------------------------------------------------
 
@@ -352,8 +379,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `dni`, `email`, `email_verified_at`, `password`, `telefono`, `rol`, `estado_cuenta`, `ultimo_ingreso`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Administrador', NULL, 'admin@vasodeleche.gob.pe', NULL, '$2y$12$fUS0UEKz5CBXtA7OOnCXK.p4Y8ssZMe2Af7WAVg2Jjydp0hfKJ9H.', NULL, 'maestro', 1, '2026-06-19 03:34:39', 'vgAohN82eHNN7gLpw3dOtz80XtKARTCpNiNR1AP9AxzYWti3KLEWXIgcUxyH', '2026-06-14 23:50:13', '2026-06-19 03:34:39'),
-(3, 'HALBER DAVID CCAPCHI RIOS', '73392625', 'halberdavid2005@gmail.com', NULL, '$2y$12$QaWToN6ecYmJ0sS/jzfY5O1AFOSj/7wlCiOAC8tSRHr0wg88LTGqi', '914071918', 'trabajador', 1, '2026-06-19 03:34:11', NULL, '2026-06-15 17:58:56', '2026-06-19 03:34:11');
+(1, 'Administrador', NULL, 'admin@vasodeleche.gob.pe', NULL, '$2y$12$fUS0UEKz5CBXtA7OOnCXK.p4Y8ssZMe2Af7WAVg2Jjydp0hfKJ9H.', NULL, 'maestro', 1, '2026-06-19 06:52:49', 'AlJHCIjjQPTVYqB0liVGcdZbVcTMNHMh9GXFiiRbyRD7gFHEeEGCzL4Zg6ID', '2026-06-14 23:50:13', '2026-06-19 06:52:49'),
+(4, 'HALBER DAVID CCAPCHI RIOS', '73392625', 'halberdavid2005@gmail.com', NULL, '$2y$12$XqcnSKLEGlOyAkNM3MwL6uODu/TpEGW9U9aeQNT5d4Tqqj.yW0mMa', '914071918', 'trabajador', 1, '2026-06-19 06:52:16', NULL, '2026-06-19 06:35:38', '2026-06-19 06:52:16');
 
 --
 -- Índices para tablas volcadas
@@ -449,13 +476,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `actividad_logs`
 --
 ALTER TABLE `actividad_logs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `beneficiarios`
 --
 ALTER TABLE `beneficiarios`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT de la tabla `configuraciones`
@@ -467,7 +494,7 @@ ALTER TABLE `configuraciones`
 -- AUTO_INCREMENT de la tabla `entregas`
 --
 ALTER TABLE `entregas`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=99;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=103;
 
 --
 -- AUTO_INCREMENT de la tabla `jobs`
@@ -479,7 +506,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT de la tabla `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
@@ -491,7 +518,7 @@ ALTER TABLE `productos`
 -- AUTO_INCREMENT de la tabla `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Restricciones para tablas volcadas

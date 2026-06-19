@@ -76,55 +76,109 @@
     </div>
   </div>
 </div>
-
-{{-- ── Filtros ── --}}
+{{-- ── Filtros avanzados ── --}}
 <div class="vl-card mb-4 vl-animate">
   <div class="vl-card__body" style="padding: 14px 20px;">
-    <form method="GET" action="{{ route('admin.entregas') }}">
-      <div class="vl-search-bar">
+    <form method="GET" action="{{ route('admin.entregas') }}" id="formFiltrosEntregas">
 
-        {{-- Búsqueda textual --}}
+      {{-- Fila 1: búsqueda + fechas --}}
+      <div class="vl-search-bar" style="margin-bottom: 10px;">
         <div class="vl-input-icon-wrap" style="flex: 1; min-width: 200px;">
           <i class="bi bi-search"></i>
-          <input type="text"
-                 name="q"
-                 class="vl-input"
+          <input type="text" name="q" class="vl-input"
                  value="{{ request('q') }}"
                  placeholder="Buscar por nombre o DNI…">
         </div>
-
-        {{-- Fecha desde --}}
-        <div style="min-width: 150px;">
-          <input type="date"
-                 name="desde"
-                 class="vl-input"
-                 value="{{ request('desde') }}"
-                 title="Desde">
+        <div style="min-width: 148px;">
+          <input type="date" name="desde" class="vl-input"
+                 value="{{ request('desde') }}" title="Desde">
         </div>
-
-        {{-- Fecha hasta --}}
-        <div style="min-width: 150px;">
-          <input type="date"
-                 name="hasta"
-                 class="vl-input"
-                 value="{{ request('hasta') }}"
-                 title="Hasta">
+        <div style="min-width: 148px;">
+          <input type="date" name="hasta" class="vl-input"
+                 value="{{ request('hasta') }}" title="Hasta">
         </div>
-
         <button type="submit" class="vl-btn vl-btn--primary vl-btn--sm">
-          <i class="bi bi-funnel-fill"></i>
-          Filtrar
+          <i class="bi bi-funnel-fill"></i> Filtrar
         </button>
-
-        @if(request()->hasAny(['q','desde','hasta']))
-          <a href="{{ route('admin.entregas') }}"
-             class="vl-btn vl-btn--ghost vl-btn--sm">
-            <i class="bi bi-x-circle"></i>
-            Limpiar
+        @if(request()->hasAny(['q','desde','hasta','producto_id','tipo_beneficiario','operador_id']))
+          <a href="{{ route('admin.entregas') }}" class="vl-btn vl-btn--ghost vl-btn--sm">
+            <i class="bi bi-x-circle"></i> Limpiar
           </a>
         @endif
+      </div>
+
+      {{-- Fila 2: selectores avanzados --}}
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+
+        <select name="producto_id" class="vl-select" style="width: auto; min-width: 190px;">
+          <option value="">Todos los productos</option>
+          <option value="general" {{ request('producto_id') === 'general' ? 'selected' : '' }}>
+            — Ración general (sin producto)
+          </option>
+          @foreach($productos as $prod)
+            <option value="{{ $prod->id }}" {{ request('producto_id') == $prod->id ? 'selected' : '' }}>
+              {{ $prod->nombre }}@if($prod->marca) — {{ $prod->marca }}@endif
+            </option>
+          @endforeach
+        </select>
+
+        <select name="tipo_beneficiario" class="vl-select" style="width: auto; min-width: 180px;">
+          <option value="">Todos los tipos</option>
+          <optgroup label="Primera Prioridad">
+            <option value="niño 0-6"  {{ request('tipo_beneficiario') === 'niño 0-6'  ? 'selected' : '' }}>Niño 0-6 años</option>
+            <option value="gestante"  {{ request('tipo_beneficiario') === 'gestante'  ? 'selected' : '' }}>Gestante</option>
+            <option value="lactante"  {{ request('tipo_beneficiario') === 'lactante'  ? 'selected' : '' }}>Lactante</option>
+          </optgroup>
+          <optgroup label="Segunda Prioridad">
+            <option value="niño 7-13"     {{ request('tipo_beneficiario') === 'niño 7-13'     ? 'selected' : '' }}>Niño 7-13 años</option>
+            <option value="adulto mayor"  {{ request('tipo_beneficiario') === 'adulto mayor'  ? 'selected' : '' }}>Adulto mayor</option>
+            <option value="discapacitado" {{ request('tipo_beneficiario') === 'discapacitado' ? 'selected' : '' }}>Discapacitado</option>
+            <option value="tbc"           {{ request('tipo_beneficiario') === 'tbc'           ? 'selected' : '' }}>TBC</option>
+          </optgroup>
+        </select>
+
+        <select name="operador_id" class="vl-select" style="width: auto; min-width: 170px;">
+          <option value="">Todos los operadores</option>
+          @foreach($operadores as $op)
+            <option value="{{ $op->id }}" {{ request('operador_id') == $op->id ? 'selected' : '' }}>
+              {{ $op->name }}
+            </option>
+          @endforeach
+        </select>
+
+        {{-- Atajos de fecha --}}
+        <div style="display: flex; gap: 6px; margin-left: auto;">
+          <button type="button" class="vl-btn vl-btn--ghost vl-btn--sm" onclick="setFechaAtajo('hoy')">Hoy</button>
+          <button type="button" class="vl-btn vl-btn--ghost vl-btn--sm" onclick="setFechaAtajo('semana')">7 días</button>
+          <button type="button" class="vl-btn vl-btn--ghost vl-btn--sm" onclick="setFechaAtajo('mes')">Este mes</button>
+        </div>
 
       </div>
+
+      {{-- Etiquetas de filtros activos (visibles también al imprimir) --}}
+      @php
+        $filtrosActivos = array_filter([
+          request('q')                 ? 'Búsqueda: "' . request('q') . '"'                                           : null,
+          request('desde')             ? 'Desde: ' . request('desde')                                                  : null,
+          request('hasta')             ? 'Hasta: ' . request('hasta')                                                  : null,
+          request('tipo_beneficiario') ? 'Tipo: ' . request('tipo_beneficiario')                                       : null,
+          request('operador_id')       ? 'Operador: ' . ($operadores->find(request('operador_id'))?->name ?? '—')      : null,
+          request('producto_id') === 'general'
+            ? 'Ración: General'
+            : (request('producto_id') ? 'Producto: ' . ($productos->find(request('producto_id'))?->nombre ?? '—') : null),
+        ]);
+      @endphp
+      @if(count($filtrosActivos))
+        <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px;">
+          @foreach($filtrosActivos as $etiqueta)
+            <span class="vl-badge vl-badge--blue"
+                  style="font-size: .7rem; display: inline-flex; align-items: center; gap: 4px;">
+              <i class="bi bi-funnel-fill"></i>{{ $etiqueta }}
+            </span>
+          @endforeach
+        </div>
+      @endif
+
     </form>
   </div>
 </div>
@@ -291,3 +345,31 @@
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+function setFechaAtajo(periodo) {
+  const hoy    = new Date();
+  const pad    = n => String(n).padStart(2, '0');
+  const fmt    = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  const form   = document.getElementById('formFiltrosEntregas');
+  const desde  = form.querySelector('[name="desde"]');
+  const hasta  = form.querySelector('[name="hasta"]');
+  const hoyStr = fmt(hoy);
+
+  hasta.value = hoyStr;
+
+  if (periodo === 'hoy') {
+    desde.value = hoyStr;
+  } else if (periodo === 'semana') {
+    const d = new Date(hoy);
+    d.setDate(d.getDate() - 6);
+    desde.value = fmt(d);
+  } else if (periodo === 'mes') {
+    desde.value = `${hoy.getFullYear()}-${pad(hoy.getMonth()+1)}-01`;
+  }
+
+  form.submit();
+}
+</script>
+@endpush

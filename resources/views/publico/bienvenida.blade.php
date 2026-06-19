@@ -124,7 +124,7 @@
           <div style="font-size:.72rem; color:rgba(255,255,255,.3); margin-bottom:8px;">
             <i class="bi bi-clock me-1"></i>
             Redirigiendo automáticamente en
-            <span id="countdown" style="color:#10b981; font-weight:700;">6</span>s
+            <span id="countdown" style="color:#10b981; font-weight:700;">15</span>s
           </div>
           <div style="background:rgba(255,255,255,.1); border-radius:99px;
                       height:3px; overflow:hidden;">
@@ -320,7 +320,7 @@
 @push('scripts')
 <script>
 // ── Auto-redirect con countdown ──
-let segundos = 6;
+let segundos = 15;
 const countdown   = document.getElementById('countdown');
 const progressBar = document.getElementById('progressBar');
 
@@ -328,7 +328,7 @@ const timer = setInterval(() => {
   segundos--;
   if (countdown) countdown.textContent = segundos;
   if (progressBar) {
-    progressBar.style.width = ((segundos / 6) * 100) + '%';
+    progressBar.style.width = ((segundos / 15) * 100) + '%';
   }
   if (segundos <= 0) {
     clearInterval(timer);

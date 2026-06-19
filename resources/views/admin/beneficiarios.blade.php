@@ -30,22 +30,21 @@
       <i class="bi bi-printer-fill"></i>
       Imprimir
     </button>
-    @if(auth()->user()->rol === 'maestro')
-      <button class="vl-btn vl-btn--primary vl-btn--sm"
-              data-bs-toggle="modal"
-              data-bs-target="#modalNuevoBeneficiario">
-        <i class="bi bi-person-plus-fill"></i>
-        Nuevo Beneficiario
-      </button>
-    @endif
+    <button class="vl-btn vl-btn--primary vl-btn--sm"
+            data-bs-toggle="modal"
+            data-bs-target="#modalNuevoBeneficiario">
+      <i class="bi bi-person-plus-fill"></i>
+      Nuevo Beneficiario
+    </button>
   </div>
 </div>
 
-{{-- ── Buscador y filtros ── --}}
+{{-- ── Buscador y filtros avanzados ── --}}
 <div class="vl-card mb-4 vl-animate">
   <div class="vl-card__body" style="padding: 14px 20px;">
-    <div class="vl-search-bar">
 
+    {{-- Fila 1: búsqueda + botones --}}
+    <div class="vl-search-bar" style="margin-bottom: 10px;">
       <div class="vl-input-icon-wrap" style="flex: 1; min-width: 220px;">
         <i class="bi bi-search"></i>
         <input type="text"
@@ -55,25 +54,72 @@
                data-cols="0,1,2,3"
                placeholder="Buscar por DNI, nombre, sector…">
       </div>
+      <button class="vl-btn vl-btn--ghost vl-btn--sm"
+              id="btnLimpiarFiltros"
+              title="Limpiar todos los filtros">
+        <i class="bi bi-x-circle"></i>
+        Limpiar
+      </button>
+    </div>
 
-      <select class="vl-select"
-              id="vlSelectFilter"
-              data-table="tblBeneficiarios"
-              data-col="5"
-              style="width: auto; min-width: 150px;">
+    {{-- Fila 2: filtros select --}}
+    <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+
+      <select class="vl-select" id="filtroEstado" style="width: auto; min-width: 150px;">
         <option value="">Todos los estados</option>
         <option value="activo">Activos</option>
         <option value="baja">De baja</option>
       </select>
 
-      <button class="vl-btn vl-btn--ghost vl-btn--sm"
-              id="btnLimpiarFiltros"
-              title="Limpiar filtros">
-        <i class="bi bi-x-circle"></i>
-        Limpiar
-      </button>
+      <select class="vl-select" id="filtroTipo" style="width: auto; min-width: 170px;">
+        <option value="">Todos los tipos</option>
+        <optgroup label="Primera Prioridad">
+          <option value="niño 0-6">Niño 0-6 años</option>
+          <option value="gestante">Gestante</option>
+          <option value="lactante">Lactante</option>
+        </optgroup>
+        <optgroup label="Segunda Prioridad">
+          <option value="niño 7-13">Niño 7-13 años</option>
+          <option value="adulto mayor">Adulto mayor</option>
+          <option value="discapacitado">Discapacitado</option>
+          <option value="tbc">TBC</option>
+        </optgroup>
+      </select>
+
+      <select class="vl-select" id="filtroSector" style="width: auto; min-width: 180px;">
+        <option value="">Todos los sectores</option>
+        @php
+          $sectoresUnicos = $beneficiarios
+            ->pluck('sector_o_comite')
+            ->filter()
+            ->unique()
+            ->sort()
+            ->values();
+        @endphp
+        @foreach($sectoresUnicos as $sector)
+          <option value="{{ strtolower($sector) }}">{{ $sector }}</option>
+        @endforeach
+      </select>
+
+      <select class="vl-select" id="filtroRacion" style="width: auto; min-width: 150px;">
+        <option value="">Ración hoy: todos</option>
+        <option value="si">Recibió hoy</option>
+        <option value="no">No recibió hoy</option>
+      </select>
+
+      {{-- Contador de resultados visibles --}}
+      <span id="vlFiltroContador"
+            style="font-size:.75rem; color:var(--vl-text-muted); margin-left:auto;">
+        {{ $beneficiarios->count() }} registros
+      </span>
 
     </div>
+
+    {{-- Etiquetas de filtros activos (para impresión y visual) --}}
+    <div id="vlFiltrosActivos" style="display:none; margin-top:10px; gap:6px; flex-wrap:wrap;">
+      {{-- Se puebla por JS --}}
+    </div>
+
   </div>
 </div>
 
@@ -255,7 +301,6 @@
      MODAL — Nuevo Beneficiario
      ============================================================ --}}
 @section('modals')
-@if(auth()->user()->rol === 'maestro')
 <div class="modal fade vl-modal" id="modalNuevoBeneficiario" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
@@ -393,20 +438,115 @@
     </div>
   </div>
 </div>
-@endif
 @endsection
 
 @push('scripts')
 <script>
-  // Limpiar filtros
-  document.getElementById('btnLimpiarFiltros')?.addEventListener('click', () => {
-    document.getElementById('vlTableSearch').value = '';
-    document.getElementById('vlSelectFilter').value = '';
-    document.querySelectorAll('#tblBeneficiarios tbody tr').forEach(r => {
-      r.style.display = '';
+(function () {
+
+  // ── Índices de columna en la tabla ──
+  const COL_DNI     = 0;
+  const COL_NOMBRE  = 1;
+  const COL_TIPO    = 2;
+  const COL_SECTOR  = 3;
+  const COL_ESTADO  = 5;
+  const COL_RACION  = 6;
+
+  const tabla      = document.getElementById('tblBeneficiarios');
+  const emptyRow   = document.getElementById('vlTableEmpty');
+  const contador   = document.getElementById('vlFiltroContador');
+  const activosBox = document.getElementById('vlFiltrosActivos');
+
+  function getFilas() {
+    return Array.from(tabla.querySelectorAll('tbody tr:not(#vlTableEmpty)'));
+  }
+
+  function textoCelda(fila, col) {
+    const td = fila.querySelectorAll('td')[col];
+    return td ? td.textContent.trim().toLowerCase() : '';
+  }
+
+  function aplicarFiltros() {
+    const q       = document.getElementById('vlTableSearch').value.trim().toLowerCase();
+    const estado  = document.getElementById('filtroEstado').value.toLowerCase();
+    const tipo    = document.getElementById('filtroTipo').value.toLowerCase();
+    const sector  = document.getElementById('filtroSector').value.toLowerCase();
+    const racion  = document.getElementById('filtroRacion').value.toLowerCase();
+
+    let visibles = 0;
+
+    getFilas().forEach(fila => {
+      const textoLibre = [COL_DNI, COL_NOMBRE, COL_TIPO, COL_SECTOR]
+        .map(c => textoCelda(fila, c)).join(' ');
+
+      const okTexto  = !q      || textoLibre.includes(q);
+      const okEstado = !estado || textoCelda(fila, COL_ESTADO).includes(estado);
+      const okTipo   = !tipo   || textoCelda(fila, COL_TIPO).includes(tipo);
+      const okSector = !sector || textoCelda(fila, COL_SECTOR).includes(sector);
+      const okRacion = !racion || (
+        racion === 'si' ? textoCelda(fila, COL_RACION).includes('sí') || textoCelda(fila, COL_RACION).includes('si')
+                        : textoCelda(fila, COL_RACION).includes('no')
+      );
+
+      const mostrar = okTexto && okEstado && okTipo && okSector && okRacion;
+      fila.style.display = mostrar ? '' : 'none';
+      if (mostrar) visibles++;
     });
-    document.getElementById('vlTableEmpty') &&
-      (document.getElementById('vlTableEmpty').style.display = 'none');
+
+    // Actualizar contador
+    const total = getFilas().length;
+    contador.textContent = visibles === total
+      ? `${total} registros`
+      : `${visibles} de ${total} registros`;
+
+    // Fila vacía
+    if (emptyRow) emptyRow.style.display = visibles === 0 ? '' : 'none';
+
+    // Etiquetas de filtros activos
+    actualizarEtiquetas(q, estado, tipo, sector, racion);
+  }
+
+  function actualizarEtiquetas(q, estado, tipo, sector, racion) {
+    activosBox.innerHTML = '';
+    const activos = [];
+
+    if (q)      activos.push({ label: `Búsqueda: "${q}"`,    id: 'q' });
+    if (estado) activos.push({ label: `Estado: ${estado}`,   id: 'estado' });
+    if (tipo)   activos.push({ label: `Tipo: ${tipo}`,       id: 'tipo' });
+    if (sector) activos.push({ label: `Sector: ${sector}`,   id: 'sector' });
+    if (racion) activos.push({ label: `Ración: ${racion === 'si' ? 'Recibió hoy' : 'No recibió'}`, id: 'racion' });
+
+    if (activos.length === 0) {
+      activosBox.style.display = 'none';
+      return;
+    }
+
+    activosBox.style.display = 'flex';
+    activos.forEach(({ label }) => {
+      const tag = document.createElement('span');
+      tag.className = 'vl-badge vl-badge--blue';
+      tag.style.cssText = 'font-size:.7rem; gap:5px; display:inline-flex; align-items:center;';
+      tag.innerHTML = `<i class="bi bi-funnel-fill"></i>${label}`;
+      activosBox.appendChild(tag);
+    });
+  }
+
+  // ── Event listeners ──
+  document.getElementById('vlTableSearch').addEventListener('input',  aplicarFiltros);
+  document.getElementById('filtroEstado').addEventListener('change',  aplicarFiltros);
+  document.getElementById('filtroTipo').addEventListener('change',    aplicarFiltros);
+  document.getElementById('filtroSector').addEventListener('change',  aplicarFiltros);
+  document.getElementById('filtroRacion').addEventListener('change',  aplicarFiltros);
+
+  document.getElementById('btnLimpiarFiltros').addEventListener('click', () => {
+    document.getElementById('vlTableSearch').value = '';
+    document.getElementById('filtroEstado').value  = '';
+    document.getElementById('filtroTipo').value    = '';
+    document.getElementById('filtroSector').value  = '';
+    document.getElementById('filtroRacion').value  = '';
+    aplicarFiltros();
   });
+
+})();
 </script>
 @endpush

@@ -139,7 +139,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/dashboard',
             [AdminController::class, 'dashboardNuevo'])->name('dashboard.index');
         Route::get('/dashboard/estadisticas',
-            [AdminController::class, 'dashboardEstadisticas'])->name('dashboard.estadisticas');
+            [AdminController::class, 'dashboardNuevo'])->name('dashboard.estadisticas');
         Route::get('/dashboard/historial',
             [AdminController::class, 'dashboardHistorial'])->name('dashboard.historial');
         Route::get('/dashboard/alertas',

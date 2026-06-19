@@ -1,0 +1,1 @@
+{{-- Panel de configuración movido a index.blade.php --}}
