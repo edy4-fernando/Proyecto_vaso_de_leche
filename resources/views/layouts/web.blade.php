@@ -16,13 +16,13 @@
 <body class="@yield('body-class')">
 
   {{-- NAVBAR --}}
-  @yield('navbar', View::make('web._components.navbar'))
+  @yield('navbar', View::make('publico._components.navbar'))
 
   {{-- CONTENIDO --}}
   @yield('content')
 
   {{-- FOOTER --}}
-  @yield('footer', View::make('web._components.footer-institucional'))
+  @yield('footer', View::make('publico._components.footer-institucional'))
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   @stack('scripts')

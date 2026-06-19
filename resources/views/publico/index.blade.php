@@ -16,7 +16,7 @@
 
       {{-- ── COLUMNA IZQUIERDA: Formulario de marcado ── --}}
       <div class="col-lg-6">
-        @include('web._components.tarjeta-asistencia')
+        @include('publico._components.tarjeta-asistencia')
       </div>
 
       {{-- ── COLUMNA DERECHA: Hero institucional ── --}}
@@ -34,7 +34,7 @@
         </p>
 
         {{-- Métricas --}}
-        @include('web._components.paneles-estadisticos')
+        @include('publico._components.paneles-estadisticos')
 
         {{-- Badge de seguridad --}}
         <div class="hero-security-badge">

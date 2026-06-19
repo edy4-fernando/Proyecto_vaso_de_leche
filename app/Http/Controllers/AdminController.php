@@ -528,7 +528,55 @@ class AdminController extends Controller
         return redirect()->back()
             ->with('success', 'Contraseña actualizada correctamente.');
     }
+    public function cuenta()
+    {
+        return view('configuracion.cuenta');
+    }
+    /* ============================================================
+       MI ACTIVIDAD — Historial personal (cualquier rol, solo lectura)
+       GET /admin/mi-actividad
+       ============================================================ */
+    public function miActividad()
+    {
+        $actividad = \App\Models\ActividadLog::where('user_id', Auth::id())
+            ->orderByDesc('created_at')
+            ->paginate(20);
 
+        return view('admin.mi-actividad', compact('actividad'));
+    }
+
+    /* ============================================================
+       19b. ACTUALIZAR CORREO ELECTRÓNICO
+       POST /perfil/actualizar-email
+       ============================================================ */
+    public function actualizarEmail(Request $request)
+    {
+        $request->validate([
+            'email_nuevo'     => 'required|email|unique:users,email,' . Auth::id(),
+            'password_actual' => 'required',
+        ]);
+
+        $user = Auth::user();
+
+        if (!Hash::check($request->password_actual, $user->password)) {
+            return redirect()->back()
+                ->with('error', 'La contraseña actual no es correcta.');
+        }
+
+        $emailAnterior = $user->email;
+
+        $user->update([
+            'email' => $request->email_nuevo,
+        ]);
+
+        ActividadLog::registrar(
+            'EMAIL_ACTUALIZADO',
+            'El usuario ' . $user->name . ' cambió su correo de ' . $emailAnterior . ' a ' . $request->email_nuevo
+        );
+
+        return redirect()->back()
+            ->with('success', 'Correo electrónico actualizado correctamente.');
+    }
     /* ============================================================
        20. DASHBOARD NUEVO — Estadísticas generales
        GET /dashboard
@@ -820,6 +868,7 @@ class AdminController extends Controller
         return redirect()->route('dashboard.configuracion')
             ->with('success', 'Configuración guardada correctamente.');
     }
+    
 
 }
     

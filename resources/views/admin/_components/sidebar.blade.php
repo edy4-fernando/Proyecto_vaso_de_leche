@@ -53,6 +53,14 @@
       <span class="vl-nav__link-text">Entregas</span>
     </a>
 
+    <a href="{{ route('admin.mi-actividad') }}"
+       class="vl-nav__link {{ ($activeModule ?? '') === 'mi-actividad' ? 'active' : '' }}"
+       data-bs-toggle="tooltip" data-bs-placement="right"
+       title="Tu historial de acciones">
+      <i class="bi bi-clock-history vl-nav__icon"></i>
+      <span class="vl-nav__link-text">Mi Actividad</span>
+    </a>
+
     @if(auth()->user()->rol === 'maestro')
 
       <span class="vl-nav__label">Administracion</span>

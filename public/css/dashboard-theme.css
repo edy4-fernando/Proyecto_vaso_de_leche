@@ -204,6 +204,10 @@ html[data-db-theme="oceano"] .vl-db-sidebar {
   border-radius: 0 3px 3px 0;
 }
 
+.vl-db-sidebar.collapsed .vl-db-nav__link.active::before {
+  display: none;
+}
+
 .vl-db-nav__icon {
   font-size:   1rem;
   width:       20px;
@@ -228,11 +232,14 @@ html[data-db-theme="oceano"] .vl-db-sidebar {
 .vl-db-sidebar.collapsed .vl-db-sidebar__brand-sub,
 .vl-db-sidebar.collapsed .vl-db-nav__label,
 .vl-db-sidebar.collapsed .vl-db-nav__link-text,
-.vl-db-sidebar.collapsed .vl-db-nav__badge,
 .vl-db-sidebar.collapsed .vl-db-footer__info {
   opacity:  0;
   width:    0;
   overflow: hidden;
+}
+
+.vl-db-sidebar.collapsed .vl-db-nav__badge {
+  display: none;
 }
 
 .vl-db-sidebar.collapsed .vl-db-nav__link {

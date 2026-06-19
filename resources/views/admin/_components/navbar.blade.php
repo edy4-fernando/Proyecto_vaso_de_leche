@@ -118,13 +118,6 @@
           Mi cuenta
         </a>
 
-        {{-- Tema --}}
-        <a href="{{ route('tema.index') }}"
-           class="vl-navbar__dropdown-item">
-          <i class="bi bi-palette-fill"></i>
-          Cambiar tema
-        </a>
-
         {{-- Selección de panel (solo maestro) --}}
         @if(auth()->user()->rol === 'maestro')
           <a href="{{ route('seleccion.panel') }}"

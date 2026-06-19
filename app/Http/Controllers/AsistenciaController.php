@@ -12,7 +12,7 @@ class AsistenciaController extends Controller
 {
     public function index()
     {
-        return view('web.index');
+        return view('publico.index');
     }
 
     public function buscarDni(Request $request)
@@ -76,9 +76,9 @@ class AsistenciaController extends Controller
 
     public function bienvenidaBeneficiario($id)
     {
-        $beneficiario  = \App\Models\Beneficiario::findOrFail($id);
+        $beneficiario = Beneficiario::findOrFail($id);
         $totalRaciones = \App\Models\Entrega::where('beneficiario_id', $id)->count();
 
-        return view('web.bienvenida', compact('beneficiario', 'totalRaciones'));
+       return view('publico.bienvenida', compact('beneficiario'));
     }
 }

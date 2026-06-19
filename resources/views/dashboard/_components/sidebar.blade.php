@@ -35,7 +35,7 @@
 
     <a href="{{ route('dashboard.actividad') }}"
       class="vl-db-nav__link {{ ($activeModule ?? '') === 'actividad' ? 'active' : '' }}">
-      <i class="bi bi-activity vl-db-nav__icon"></i>
+      <i class="bi bi-list-check vl-db-nav__icon"></i>
       <span class="vl-db-nav__link-text">Actividad</span>
       @php
         $actHoy = \App\Models\ActividadLog::whereDate('created_at', today())->count();

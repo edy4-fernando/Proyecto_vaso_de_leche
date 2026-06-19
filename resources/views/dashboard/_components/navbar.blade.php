@@ -27,6 +27,12 @@
 
   {{-- Acciones --}}
   <div class="vl-navbar__actions">
+    {{-- Ir al Admin --}}
+    <a href="{{ route('admin.dashboard') }}"
+      class="vl-navbar__dropdown-item">
+      <i class="bi bi-speedometer2"></i>
+      Ir al Admin
+    </a>
     {{-- Dark mode --}}
     <button class="vl-navbar__darkmode" id="btnDarkMode" title="Modo oscuro">
       <i class="bi bi-moon-fill"></i>
@@ -97,13 +103,6 @@
            class="vl-navbar__dropdown-item">
           <i class="bi bi-person-circle"></i>
           Mi cuenta
-        </a>
-
-        {{-- Tema --}}
-        <a href="{{ route('tema.index') }}"
-           class="vl-navbar__dropdown-item">
-          <i class="bi bi-palette-fill"></i>
-          Cambiar tema
         </a>
 
         {{-- Cambiar panel (maestro) --}}

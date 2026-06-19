@@ -23,6 +23,28 @@ Route::post('/asistencia/buscar', [AsistenciaController::class, 'buscarDni'])
     ->name('asistencia.buscar');
 Route::get('/asistencia/bienvenida/{id}', [AsistenciaController::class, 'bienvenidaBeneficiario'])
     ->name('asistencia.bienvenida');
+// Páginas institucionales — sin autenticación
+Route::get('/servicios', function () {
+    return view('publico.servicios');
+})->name('web.servicios');
+
+Route::get('/noticias', function () {
+    return view('publico.noticias');
+})->name('web.noticias');
+
+Route::get('/contacto', function () {
+    return view('publico.contacto');
+})->name('web.contacto');
+
+Route::post('/contacto', function (\Illuminate\Http\Request $request) {
+    $request->validate([
+        'nombre'        => 'required|string|max:150',
+        'tipo_consulta' => 'required|string',
+        'mensaje'       => 'required|string|max:500',
+    ]);
+    \Illuminate\Support\Facades\Log::info('Contacto web', $request->except('_token'));
+    return redirect()->route('web.contacto')->with('contacto_ok', true);
+})->name('web.contacto.post');
 
 /*
 |--------------------------------------------------------------------------
@@ -108,7 +130,9 @@ Route::middleware(['auth'])->group(function () {
     // Cambiar contraseña
     Route::post('/perfil/cambiar-password',
         [AdminController::class, 'cambiarPassword'])->name('perfil.cambiar-password');
-
+    // Actualizar correo electrónico
+    Route::post('/perfil/actualizar-email',
+        [AdminController::class, 'actualizarEmail'])->name('perfil.actualizar-email');
     // ── DASHBOARD — Solo maestro ──────────────────────────────────────────
 
     Route::middleware(['es.admin:maestro'])->group(function () {
@@ -129,29 +153,7 @@ Route::middleware(['auth'])->group(function () {
     });
     Route::put('/dashboard/configuracion',
     [AdminController::class, 'guardarConfiguracion'])->name('dashboard.configuracion.guardar');
-    // ── Páginas públicas del portal ──
-    Route::get('/servicios', function () {
-        return view('web.servicios');
-    })->name('web.servicios');
 
-    Route::get('/noticias', function () {
-        return view('web.noticias');
-    })->name('web.noticias');
-
-    Route::get('/contacto', function () {
-        return view('web.contacto');
-    })->name('web.contacto');
-    Route::post('/contacto', function (\Illuminate\Http\Request $request) {
-        $request->validate([
-            'nombre'        => 'required|string|max:150',
-            'tipo_consulta' => 'required|string',
-            'mensaje'       => 'required|string|max:500',
-        ]);
-
-        // Por ahora guardamos en log — en el futuro se puede enviar email
-        \Illuminate\Support\Facades\Log::info('Contacto web', $request->except('_token'));
-
-        return redirect()->route('web.contacto')
-            ->with('contacto_ok', true);
-    })->name('web.contacto.post');
+    Route::get('/cuenta', [AdminController::class, 'cuenta'])->name('cuenta.index');
+    Route::get('/admin/mi-actividad', [AdminController::class, 'miActividad'])->name('admin.mi-actividad');
 });
