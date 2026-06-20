@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 19-06-2026 a las 08:56:27
+-- Tiempo de generación: 20-06-2026 a las 05:08:27
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -281,7 +281,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (3, '0001_01_01_000001_create_cache_table', 1),
 (4, '0001_01_01_000002_create_jobs_table', 1),
 (5, '2026_06_18_100000_add_soft_deletes', 1),
-(6, '2026_06_19_000001_add_metadata_to_actividad_logs', 2);
+(6, '2026_06_19_000001_add_metadata_to_actividad_logs', 2),
+(7, '2026_06_20_022253_add_otp_to_users_table', 3);
 
 -- --------------------------------------------------------
 
@@ -350,7 +351,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('Sj4rlaVlW38bmo04OwLBXC8LijA5yeLD7NF6oj9q', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiZDJrQ1gycTVNRGVGZUhMQllHQlIzUE5jWDFJZHRYQ1JCOWp0SlpCUSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9kYXNoYm9hcmQiO3M6NToicm91dGUiO3M6MTU6ImRhc2hib2FyZC5pbmRleCI7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7fQ==', 1781852157);
+('eeqV4I6Pc6GEB5uQh56o8W9XQWwgY5dtbZ7qI9TZ', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.124.2 Chrome/148.0.7778.97 Electron/42.2.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiRXQzRmQyWDl6MHRnRll5cFJkMU5DRm8wcGFhTWRzR0lKSVBVVzZDYiI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7Tjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1781922815),
+('jy1Sn9fvAdvHW12ZVFDtK8BQ8VrCzFoes3VbbBeV', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiSGR3UWJSY0RMQnJsOXJBRWlMWHExcTdYRlQ0T2JwQzBBYW1pSE5lRiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9kYXNoYm9hcmQiO3M6NToicm91dGUiO3M6MTU6ImRhc2hib2FyZC5pbmRleCI7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7fQ==', 1781924702);
 
 -- --------------------------------------------------------
 
@@ -365,6 +367,8 @@ CREATE TABLE `users` (
   `email` varchar(255) NOT NULL,
   `email_verified_at` datetime DEFAULT NULL,
   `password` varchar(255) NOT NULL,
+  `otp_codigo` varchar(255) DEFAULT NULL,
+  `otp_expira_en` timestamp NULL DEFAULT NULL,
   `telefono` varchar(15) DEFAULT NULL,
   `rol` enum('maestro','trabajador') NOT NULL DEFAULT 'trabajador',
   `estado_cuenta` tinyint(1) NOT NULL DEFAULT 1,
@@ -378,9 +382,9 @@ CREATE TABLE `users` (
 -- Volcado de datos para la tabla `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `dni`, `email`, `email_verified_at`, `password`, `telefono`, `rol`, `estado_cuenta`, `ultimo_ingreso`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Administrador', NULL, 'admin@vasodeleche.gob.pe', NULL, '$2y$12$fUS0UEKz5CBXtA7OOnCXK.p4Y8ssZMe2Af7WAVg2Jjydp0hfKJ9H.', NULL, 'maestro', 1, '2026-06-19 06:52:49', 'AlJHCIjjQPTVYqB0liVGcdZbVcTMNHMh9GXFiiRbyRD7gFHEeEGCzL4Zg6ID', '2026-06-14 23:50:13', '2026-06-19 06:52:49'),
-(4, 'HALBER DAVID CCAPCHI RIOS', '73392625', 'halberdavid2005@gmail.com', NULL, '$2y$12$XqcnSKLEGlOyAkNM3MwL6uODu/TpEGW9U9aeQNT5d4Tqqj.yW0mMa', '914071918', 'trabajador', 1, '2026-06-19 06:52:16', NULL, '2026-06-19 06:35:38', '2026-06-19 06:52:16');
+INSERT INTO `users` (`id`, `name`, `dni`, `email`, `email_verified_at`, `password`, `otp_codigo`, `otp_expira_en`, `telefono`, `rol`, `estado_cuenta`, `ultimo_ingreso`, `remember_token`, `created_at`, `updated_at`) VALUES
+(1, 'Administrador', NULL, 'admin@vasodeleche.gob.pe', NULL, '$2y$12$fUS0UEKz5CBXtA7OOnCXK.p4Y8ssZMe2Af7WAVg2Jjydp0hfKJ9H.', NULL, NULL, NULL, 'maestro', 1, '2026-06-20 03:04:58', 'UUUTFJgOshPeoiE7EdDzDvq04ZgbrUsjshj3jydR7rNfQZQWakNDGp3Eyaoq', '2026-06-14 23:50:13', '2026-06-20 03:04:58'),
+(4, 'HALBER DAVID CCAPCHI RIOS', '73392625', 'halberdavid2005@gmail.com', NULL, '$2y$12$XqcnSKLEGlOyAkNM3MwL6uODu/TpEGW9U9aeQNT5d4Tqqj.yW0mMa', NULL, NULL, '914071918', 'trabajador', 1, '2026-06-19 06:52:16', NULL, '2026-06-19 06:35:38', '2026-06-19 06:52:16');
 
 --
 -- Índices para tablas volcadas
@@ -506,7 +510,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT de la tabla `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
