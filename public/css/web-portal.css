@@ -26,6 +26,8 @@ body {
     min-height: 100vh;
     font-family: 'Inter', -apple-system, sans-serif;
     color: white;
+    display: flex;
+    flex-direction: column;
 }
 
 /* ── Navbar ── */
@@ -250,6 +252,7 @@ body {
     border-top: 1px solid rgba(255,255,255,.06);
     padding: 2rem 0 1rem;
     text-align: center;
+    margin-top: auto;
 }
 
 .footer-eyebrow {
@@ -282,4 +285,18 @@ body {
 .navbar-custom .nav-link.active {
   color: #fff !important;
   font-weight: 600;
+}
+
+/* ── Select opciones ── */
+select option {
+  background: #1e3a8a;
+  color: #fff;
+  font-size: .85rem;
+  padding: 8px;
+}
+
+select option:checked,
+select option:hover {
+  background: #2563eb;
+  color: #fff;
 }

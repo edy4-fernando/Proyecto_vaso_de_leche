@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
+use App\Mail\OtpMail;
 use App\Models\Beneficiario;
 use App\Models\Entrega;
 use App\Models\Producto;
@@ -167,24 +170,7 @@ class AdminController extends Controller
             'tipo_beneficiario'=> 'required|string|max:50',
         ]);
 
-        $beneficiario->update([
-            'dni'                   => $request->dni,
-            'nombre'                => strtoupper($request->nombre),
-            'apellido'              => strtoupper($request->apellido),
-            'fecha_nacimiento'      => $request->fecha_nacimiento,
-            'direccion'             => strtoupper($request->direccion),
-            'telefono'              => $request->telefono,
-            'tipo_beneficiario'     => $request->tipo_beneficiario,
-            'sector_o_comite'       => $request->sector_o_comite
-                                        ? strtoupper($request->sector_o_comite)
-                                        : null,
-            'nombre_apoderado'      => $request->nombre_apoderado
-                                        ? strtoupper($request->nombre_apoderado)
-                                        : null,
-            'dni_apoderado'         => $request->dni_apoderado,
-            'observaciones_medicas' => $request->observaciones_medicas,
-        ]);
-        // Capturar cambios antes de guardar
+        // Capturar valores ANTES de actualizar
         $etiquetas = [
             'nombre'               => 'Nombre',
             'apellido'             => 'Apellido',
@@ -212,6 +198,25 @@ class AdminController extends Controller
             }
         }
 
+        // Guardar DESPUÉS de capturar los cambios
+        $beneficiario->update([
+            'dni'                   => $request->dni,
+            'nombre'                => strtoupper($request->nombre),
+            'apellido'              => strtoupper($request->apellido),
+            'fecha_nacimiento'      => $request->fecha_nacimiento,
+            'direccion'             => strtoupper($request->direccion),
+            'telefono'              => $request->telefono,
+            'tipo_beneficiario'     => $request->tipo_beneficiario,
+            'sector_o_comite'       => $request->sector_o_comite
+                                        ? strtoupper($request->sector_o_comite)
+                                        : null,
+            'nombre_apoderado'      => $request->nombre_apoderado
+                                        ? strtoupper($request->nombre_apoderado)
+                                        : null,
+            'dni_apoderado'         => $request->dni_apoderado,
+            'observaciones_medicas' => $request->observaciones_medicas,
+        ]);
+
         ActividadLog::registrar(
             'BENEFICIARIO_EDITADO',
             'Se modificaron datos de: ' . strtoupper($request->nombre) . ' ' . strtoupper($request->apellido) . ' (DNI: ' . $request->dni . ')',
@@ -229,10 +234,6 @@ class AdminController extends Controller
        ============================================================ */
     public function eliminarBeneficiario($id)
     {
-        if (Auth::user()->rol !== 'maestro') {
-            return redirect()->back()->with('error', 'No tiene permisos para esta acción.');
-        }
-
         $beneficiario = Beneficiario::findOrFail($id);
         ActividadLog::registrar(
             'BENEFICIARIO_ELIMINADO',
@@ -252,10 +253,6 @@ class AdminController extends Controller
        ============================================================ */
     public function toggleEstadoBeneficiario($id)
     {
-        if (Auth::user()->rol !== 'maestro') {
-            return redirect()->back()->with('error', 'No tiene permisos para esta acción.');
-        }
-
         $beneficiario = Beneficiario::findOrFail($id);
         $beneficiario->update(['estado' => !$beneficiario->estado]);
         ActividadLog::registrar(
@@ -277,10 +274,7 @@ class AdminController extends Controller
        ============================================================ */
     public function listaUsuarios()
     {
-        if (Auth::user()->rol !== 'maestro') {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Acceso restringido.');
-        }
+        
 
         $usuarios = User::orderBy('name')->get();
         return view('admin.usuarios', compact('usuarios'));
@@ -293,9 +287,6 @@ class AdminController extends Controller
        ============================================================ */
     public function guardarUsuario(Request $request)
     {
-        if (Auth::user()->rol !== 'maestro') {
-            return redirect()->back()->with('error', 'No tiene permisos.');
-        }
 
         $request->validate([
             'name'     => 'required|string|max:255',
@@ -330,9 +321,7 @@ class AdminController extends Controller
        ============================================================ */
     public function eliminarUsuario($id)
     {
-        if (Auth::user()->rol !== 'maestro') {
-            return redirect()->back()->with('error', 'No tiene permisos.');
-        }
+        
 
         if ((int)$id === Auth::id()) {
             return redirect()->back()
@@ -482,9 +471,6 @@ class AdminController extends Controller
        ============================================================ */
     public function guardarProducto(Request $request)
     {
-        if (Auth::user()->rol !== 'maestro') {
-            return redirect()->back()->with('error', 'No tiene permisos.');
-        }
 
         $request->validate([
             'nombre'       => 'required|string|max:150',
@@ -515,16 +501,12 @@ class AdminController extends Controller
        ============================================================ */
     public function eliminarProducto($id)
     {
-        if (Auth::user()->rol !== 'maestro') {
-            return redirect()->back()->with('error', 'No tiene permisos.');
-        }
         $prod = Producto::findOrFail($id);
         ActividadLog::registrar(
             'PRODUCTO_ELIMINADO',
             'Se eliminó el producto: ' . $prod->nombre
         );
         $prod->delete();
-        Producto::findOrFail($id)->delete();
 
         return redirect()->route('admin.productos')
             ->with('success', 'Producto eliminado del inventario.');
@@ -536,9 +518,6 @@ class AdminController extends Controller
        ============================================================ */
     public function reabastecerProducto(Request $request, $id)
     {
-        if (Auth::user()->rol !== 'maestro') {
-            return redirect()->back()->with('error', 'No tiene permisos.');
-        }
 
         $request->validate([
             'cantidad' => 'required|integer|min:1',
@@ -563,24 +542,161 @@ class AdminController extends Controller
     public function cambiarPassword(Request $request)
     {
         $request->validate([
-            'password_actual'              => 'required',
-            'password_nuevo'               => 'required|min:8|confirmed',
+            'password_actual' => 'required',
+            'password_nuevo'  => 'required|min:8|confirmed',
         ]);
 
         $user = Auth::user();
 
+        // Verificar contraseña actual
         if (!Hash::check($request->password_actual, $user->password)) {
             return redirect()->back()
                 ->with('error', 'La contraseña actual no es correcta.');
+        }
+
+        // Evitar reutilizar la misma contraseña
+        if (Hash::check($request->password_nuevo, $user->password)) {
+            return redirect()->back()
+                ->with('error', 'La nueva contraseña no puede ser igual a la actual.');
         }
 
         $user->update([
             'password' => Hash::make($request->password_nuevo),
         ]);
 
+        ActividadLog::registrar(
+            'PASSWORD_CAMBIADO',
+            'El usuario ' . $user->name . ' cambió su contraseña.'
+        );
+
+        // Cerrar otras sesiones activas por seguridad
+        Auth::logoutOtherDevices($request->password_nuevo);
+
         return redirect()->back()
             ->with('success', 'Contraseña actualizada correctamente.');
     }
+    /* ============================================================
+       OTP — Generar y enviar código
+       POST /perfil/otp/enviar
+       ============================================================ */
+    public function otpEnviar(Request $request)
+    {
+        $request->validate([
+            'password_actual' => 'required',
+            'password_nuevo'  => [
+                'required',
+                'min:8',
+                'confirmed',
+                'regex:/[A-Z]/',      // al menos 1 mayúscula
+                'regex:/[0-9]/',      // al menos 1 número
+                'regex:/[@#$!%*?&]/', // al menos 1 especial
+            ],
+        ], [
+            'password_nuevo.regex'     => 'La contraseña debe tener al menos 1 mayúscula, 1 número y 1 carácter especial (@#$!%*?&).',
+            'password_nuevo.min'       => 'La contraseña debe tener al menos 8 caracteres.',
+            'password_nuevo.confirmed' => 'Las contraseñas no coinciden.',
+        ]);
+
+        $user = Auth::user();
+
+        // Verificar contraseña actual
+        if (!Hash::check($request->password_actual, $user->password)) {
+            return redirect()->back()
+                ->with('error', 'La contraseña actual no es correcta.');
+        }
+
+        // Evitar reutilizar la misma contraseña
+        if (Hash::check($request->password_nuevo, $user->password)) {
+            return redirect()->back()
+                ->with('error', 'La nueva contraseña no puede ser igual a la actual.');
+        }
+
+        // Generar código OTP de 6 caracteres
+        $codigo = strtoupper(Str::random(6));
+
+        // Guardar en BD con expiración de 10 minutos
+        $user->update([
+            'otp_codigo'     => Hash::make($codigo),
+            'otp_expira_en'  => now()->addMinutes(10),
+        ]);
+
+        // Guardar nueva contraseña en sesión temporalmente
+        session(['otp_password_nuevo' => $request->password_nuevo]);
+
+        // Enviar correo (en local va al log, en producción al correo real)
+        Mail::to($user->email)->send(new OtpMail($codigo, $user->name));
+
+        ActividadLog::registrar(
+            'OTP_ENVIADO',
+            'Se envió código OTP para cambio de contraseña.'
+        );
+
+        return redirect()->route('perfil.otp.verificar')
+            ->with('info', 'Se envió un código de verificación a ' . $user->email);
+    }
+
+    /* ============================================================
+       OTP — Mostrar formulario de verificación
+       GET /perfil/otp/verificar
+       ============================================================ */
+    public function otpMostrar()
+    {
+        // Si no hay contraseña en sesión, no tiene sentido estar aquí
+        if (!session('otp_password_nuevo')) {
+            return redirect()->route('cuenta.index');
+        }
+
+        return view('configuracion.otp-verificar');
+    }
+
+    /* ============================================================
+       OTP — Verificar código ingresado
+       POST /perfil/otp/verificar
+       ============================================================ */
+    public function otpVerificar(Request $request)
+    {
+        $request->validate([
+            'codigo' => 'required|string|size:6',
+        ]);
+
+        $user = Auth::user();
+
+        // Verificar que el OTP no haya expirado
+        if (!$user->otp_expira_en || now()->isAfter($user->otp_expira_en)) {
+            $user->update(['otp_codigo' => null, 'otp_expira_en' => null]);
+            session()->forget('otp_password_nuevo');
+            return redirect()->route('cuenta.index')
+                ->with('error', 'El código expiró. Solicita uno nuevo.');
+        }
+
+        // Verificar que el código sea correcto
+        if (!Hash::check(strtoupper($request->codigo), $user->otp_codigo)) {
+            return redirect()->back()
+                ->with('error', 'Código incorrecto. Intente nuevamente.');
+        }
+
+        // Todo correcto — guardar nueva contraseña
+        $passwordNuevo = session('otp_password_nuevo');
+
+        $user->update([
+            'password'       => Hash::make($passwordNuevo),
+            'otp_codigo'     => null,
+            'otp_expira_en'  => null,
+        ]);
+
+        session()->forget('otp_password_nuevo');
+
+        ActividadLog::registrar(
+            'PASSWORD_CAMBIADO',
+            'El usuario ' . $user->name . ' cambió su contraseña con verificación OTP.'
+        );
+
+        Auth::logoutOtherDevices($passwordNuevo);
+
+        return redirect()->route('cuenta.index')
+            ->with('success', 'Contraseña actualizada correctamente.');
+    }
+
     public function cuenta()
     {
         return view('configuracion.cuenta');
@@ -591,10 +707,6 @@ class AdminController extends Controller
        ============================================================ */
     public function papelera()
     {
-        if (Auth::user()->rol !== 'maestro') {
-            return redirect()->route('admin.dashboard')->with('error', 'Acceso restringido.');
-        }
-
         $beneficiarios = Beneficiario::onlyTrashed()->orderByDesc('deleted_at')->get();
         $productos     = Producto::onlyTrashed()->orderByDesc('deleted_at')->get();
         $entregas      = Entrega::onlyTrashed()
@@ -609,9 +721,6 @@ class AdminController extends Controller
     /* ── Restaurar beneficiario ── */
     public function restaurarBeneficiario($id)
     {
-        if (Auth::user()->rol !== 'maestro') {
-            return redirect()->back()->with('error', 'Acceso restringido.');
-        }
         $b = Beneficiario::onlyTrashed()->findOrFail($id);
         $b->restore();
         ActividadLog::registrar(
@@ -624,9 +733,6 @@ class AdminController extends Controller
     /* ── Restaurar producto ── */
     public function restaurarProducto($id)
     {
-        if (Auth::user()->rol !== 'maestro') {
-            return redirect()->back()->with('error', 'Acceso restringido.');
-        }
         $p = Producto::onlyTrashed()->findOrFail($id);
         $p->restore();
         ActividadLog::registrar(
@@ -639,9 +745,6 @@ class AdminController extends Controller
     /* ── Restaurar entrega ── */
     public function restaurarEntrega($id)
     {
-        if (Auth::user()->rol !== 'maestro') {
-            return redirect()->back()->with('error', 'Acceso restringido.');
-        }
         $e = Entrega::onlyTrashed()->findOrFail($id);
         $e->restore();
         ActividadLog::registrar(
@@ -972,19 +1075,11 @@ class AdminController extends Controller
        ============================================================ */
     public function dashboardConfiguracion()
     {
-        if (Auth::user()->rol !== 'maestro') {
-            return redirect()->route('admin.dashboard')
-                ->with('error', 'Acceso restringido.');
-        }
         return view('configuracion.sistema');
     }
 
     public function guardarConfiguracion(Request $request)
     {
-        if (Auth::user()->rol !== 'maestro') {
-            return redirect()->back()->with('error', 'Acceso restringido.');
-        }
-
         $campos = $request->except(['_token', '_method', 'grupo']);
         foreach ($campos as $llave => $valor) {
             \App\Models\Configuracion::set($llave, $valor);

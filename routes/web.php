@@ -102,13 +102,15 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/admin/beneficiarios/{id}/toggle-estado',
         [AdminController::class, 'toggleEstadoBeneficiario'])->name('admin.beneficiarios.toggle');
 
-    // Usuarios
-    Route::get('/admin/usuarios',
-        [AdminController::class, 'listaUsuarios'])->name('admin.usuarios');
-    Route::post('/admin/usuarios/guardar',
-        [AdminController::class, 'guardarUsuario'])->name('admin.usuarios.guardar');
-    Route::delete('/admin/usuarios/eliminar/{id}',
-        [AdminController::class, 'eliminarUsuario'])->name('admin.usuarios.eliminar');
+    // Usuarios — Solo maestro
+    Route::middleware(['es.admin'])->group(function () {
+        Route::get('/admin/usuarios',
+            [AdminController::class, 'listaUsuarios'])->name('admin.usuarios');
+        Route::post('/admin/usuarios/guardar',
+            [AdminController::class, 'guardarUsuario'])->name('admin.usuarios.guardar');
+        Route::delete('/admin/usuarios/eliminar/{id}',
+            [AdminController::class, 'eliminarUsuario'])->name('admin.usuarios.eliminar');
+    });
 
     // Entregas
     Route::post('/admin/entregas/guardar',
@@ -127,12 +129,18 @@ Route::middleware(['auth'])->group(function () {
         [AdminController::class, 'reabastecerProducto'])->name('admin.productos.reabastecer');
 
 
-    // Cambiar contraseña
-    Route::post('/perfil/cambiar-password',
-        [AdminController::class, 'cambiarPassword'])->name('perfil.cambiar-password');
+    // Cambiar contraseña con OTP
+    Route::post('/perfil/otp/enviar',
+        [AdminController::class, 'otpEnviar'])->name('perfil.otp.enviar');
+    Route::get('/perfil/otp/verificar',
+        [AdminController::class, 'otpMostrar'])->name('perfil.otp.verificar');
+    Route::post('/perfil/otp/verificar',
+        [AdminController::class, 'otpVerificar'])->name('perfil.otp.verificar.post');
+
     // Actualizar correo electrónico
     Route::post('/perfil/actualizar-email',
         [AdminController::class, 'actualizarEmail'])->name('perfil.actualizar-email');
+        
     // ── DASHBOARD — Solo maestro ──────────────────────────────────────────
 
     Route::middleware(['es.admin:maestro'])->group(function () {
@@ -151,15 +159,21 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/dashboard/configuracion',
             [AdminController::class, 'dashboardConfiguracion'])->name('dashboard.configuracion');
     });
-    Route::put('/dashboard/configuracion',
-    [AdminController::class, 'guardarConfiguracion'])->name('dashboard.configuracion.guardar');
 
     Route::get('/cuenta', [AdminController::class, 'cuenta'])->name('cuenta.index');
     Route::get('/admin/mi-actividad', [AdminController::class, 'miActividad'])->name('admin.mi-actividad');
 
-    // Papelera — solo maestro
-    Route::get('/admin/papelera', [AdminController::class, 'papelera'])->name('admin.papelera');
-    Route::patch('/admin/beneficiarios/{id}/restaurar', [AdminController::class, 'restaurarBeneficiario'])->name('admin.beneficiarios.restaurar');
-    Route::patch('/admin/productos/{id}/restaurar', [AdminController::class, 'restaurarProducto'])->name('admin.productos.restaurar');
-    Route::patch('/admin/entregas/{id}/restaurar', [AdminController::class, 'restaurarEntrega'])->name('admin.entregas.restaurar');
+    // Papelera y restauraciones — solo maestro
+    Route::middleware(['es.admin'])->group(function () {
+        Route::get('/admin/papelera',
+            [AdminController::class, 'papelera'])->name('admin.papelera');
+        Route::put('/dashboard/configuracion',
+            [AdminController::class, 'guardarConfiguracion'])->name('dashboard.configuracion.guardar');
+        Route::patch('/admin/beneficiarios/{id}/restaurar',
+            [AdminController::class, 'restaurarBeneficiario'])->name('admin.beneficiarios.restaurar');
+        Route::patch('/admin/productos/{id}/restaurar',
+            [AdminController::class, 'restaurarProducto'])->name('admin.productos.restaurar');
+        Route::patch('/admin/entregas/{id}/restaurar',
+            [AdminController::class, 'restaurarEntrega'])->name('admin.entregas.restaurar');
+    });
 });

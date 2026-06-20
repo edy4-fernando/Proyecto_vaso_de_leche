@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -40,16 +42,31 @@ class AuthController extends Controller
             'password.min'      => 'La contraseña debe tener al menos 6 caracteres.',
         ]);
 
+        // ── Rate Limiting: máx 5 intentos por email+IP cada 60 segundos ──
+        $key = 'login.' . Str::lower($request->email) . '|' . $request->ip();
+
+        if (RateLimiter::tooManyAttempts($key, 5)) {
+            $segundos = RateLimiter::availableIn($key);
+            return back()
+                ->withInput($request->only('email'))
+                ->withErrors([
+                    'email' => "Demasiados intentos fallidos. Intente nuevamente en {$segundos} segundos.",
+                ]);
+        }
+
         $credenciales = $request->only('email', 'password');
         $recordar     = $request->boolean('remember', false);
 
         if (!Auth::attempt($credenciales, $recordar)) {
+            RateLimiter::hit($key, 60); // registrar intento fallido, expira en 60s
             return back()
                 ->withInput($request->only('email'))
                 ->withErrors([
                     'email' => 'Las credenciales no coinciden con nuestros registros.',
                 ]);
         }
+
+        RateLimiter::clear($key); // login exitoso → limpiar contador
 
         $user = Auth::user();
 

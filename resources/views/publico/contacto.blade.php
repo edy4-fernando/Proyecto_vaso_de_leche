@@ -183,13 +183,23 @@
 
           <div class="row g-3">
 
+            @php
+            $inputStyle = "width:100%; padding:.7rem .9rem;
+                background:rgba(255,255,255,.07);
+                border:1.5px solid rgba(255,255,255,.12);
+                border-radius:10px; color:#fff; font-size:.85rem;
+                font-family:'Inter',sans-serif; outline:none;
+                transition:border-color .2s;";
+            $labelStyle = "display:block; font-size:.75rem; font-weight:600;
+                color:rgba(255,255,255,.5); margin-bottom:6px;";
+            @endphp
+
             <div class="col-md-6">
-              <label class="vl-label" style="color:rgba(255,255,255,.5);">
-                Nombre completo <span class="req">*</span>
+              <label style="{{ $labelStyle }}">
+                Nombre completo <span style="color:#f43f5e;">*</span>
               </label>
-              <input type="text" name="nombre" class="vl-input"
-                     style="background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.12);
-                            color:#fff;"
+              <input type="text" name="nombre"
+                     style="{{ $inputStyle }}"
                      placeholder="Ej: Juan Quispe"
                      value="{{ old('nombre') }}" required>
               @error('nombre')
@@ -198,64 +208,43 @@
             </div>
 
             <div class="col-md-6">
-              <label class="vl-label" style="color:rgba(255,255,255,.5);">
-                DNI
-              </label>
-              <input type="text" name="dni" class="vl-input"
-                     style="background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.12);
-                            color:#fff;"
+              <label style="{{ $labelStyle }}">DNI</label>
+              <input type="text" name="dni"
+                     style="{{ $inputStyle }}"
                      placeholder="12345678" maxlength="8"
                      value="{{ old('dni') }}">
             </div>
 
             <div class="col-md-6">
-              <label class="vl-label" style="color:rgba(255,255,255,.5);">
-                Correo electrónico
-              </label>
-              <input type="email" name="email" class="vl-input"
-                     style="background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.12);
-                            color:#fff;"
+              <label style="{{ $labelStyle }}">Correo electrónico</label>
+              <input type="email" name="email"
+                     style="{{ $inputStyle }}"
                      placeholder="correo@ejemplo.com"
                      value="{{ old('email') }}">
             </div>
 
             <div class="col-md-6">
-              <label class="vl-label" style="color:rgba(255,255,255,.5);">
-                Teléfono
-              </label>
-              <input type="text" name="telefono" class="vl-input"
-                     style="background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.12);
-                            color:#fff;"
+              <label style="{{ $labelStyle }}">Teléfono</label>
+              <input type="text" name="telefono"
+                     style="{{ $inputStyle }}"
                      placeholder="984123456" maxlength="9"
                      value="{{ old('telefono') }}">
             </div>
 
             <div class="col-12">
-              <label class="vl-label" style="color:rgba(255,255,255,.5);">
-                Tipo de consulta <span class="req">*</span>
+              <label style="{{ $labelStyle }}">
+                Tipo de consulta <span style="color:#f43f5e;">*</span>
               </label>
-              <select name="tipo_consulta" class="vl-select"
-                      style="background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.12);
-                             color:#fff;" required>
+              <select name="tipo_consulta"
+                      style="{{ $inputStyle }} appearance:auto;"
+                      required>
                 <option value="">— Seleccionar —</option>
-                <option value="inscripcion"    {{ old('tipo_consulta')==='inscripcion'    ?'selected':'' }}>
-                  Inscripción al programa
-                </option>
-                <option value="actualizacion"  {{ old('tipo_consulta')==='actualizacion'  ?'selected':'' }}>
-                  Actualización de datos
-                </option>
-                <option value="reclamo"        {{ old('tipo_consulta')==='reclamo'        ?'selected':'' }}>
-                  Reclamo o queja
-                </option>
-                <option value="informacion"    {{ old('tipo_consulta')==='informacion'    ?'selected':'' }}>
-                  Información general
-                </option>
-                <option value="baja"           {{ old('tipo_consulta')==='baja'           ?'selected':'' }}>
-                  Solicitud de baja del programa
-                </option>
-                <option value="otro"           {{ old('tipo_consulta')==='otro'           ?'selected':'' }}>
-                  Otro
-                </option>
+                <option value="inscripcion"   {{ old('tipo_consulta')==='inscripcion'   ?'selected':'' }}>Inscripción al programa</option>
+                <option value="actualizacion" {{ old('tipo_consulta')==='actualizacion' ?'selected':'' }}>Actualización de datos</option>
+                <option value="reclamo"       {{ old('tipo_consulta')==='reclamo'       ?'selected':'' }}>Reclamo o queja</option>
+                <option value="informacion"   {{ old('tipo_consulta')==='informacion'   ?'selected':'' }}>Información general</option>
+                <option value="baja"          {{ old('tipo_consulta')==='baja'          ?'selected':'' }}>Solicitud de baja del programa</option>
+                <option value="otro"          {{ old('tipo_consulta')==='otro'          ?'selected':'' }}>Otro</option>
               </select>
               @error('tipo_consulta')
                 <span style="font-size:.7rem; color:#f43f5e;">{{ $message }}</span>
@@ -263,23 +252,19 @@
             </div>
 
             <div class="col-12">
-              <label class="vl-label" style="color:rgba(255,255,255,.5);">
-                Sector / Comité de residencia
-              </label>
-              <input type="text" name="sector" class="vl-input"
-                     style="background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.12);
-                            color:#fff;"
+              <label style="{{ $labelStyle }}">Sector / Comité de residencia</label>
+              <input type="text" name="sector"
+                     style="{{ $inputStyle }}"
                      placeholder="Ej: Comité 12 - Ttio"
                      value="{{ old('sector') }}">
             </div>
 
             <div class="col-12">
-              <label class="vl-label" style="color:rgba(255,255,255,.5);">
-                Mensaje <span class="req">*</span>
+              <label style="{{ $labelStyle }}">
+                Mensaje <span style="color:#f43f5e;">*</span>
               </label>
-              <textarea name="mensaje" class="vl-textarea"
-                        style="background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.12);
-                               color:#fff; min-height:120px;"
+              <textarea name="mensaje"
+                        style="{{ $inputStyle }} min-height:120px; resize:vertical;"
                         placeholder="Describe tu consulta, reclamo o comentario..."
                         required maxlength="500">{{ old('mensaje') }}</textarea>
               @error('mensaje')

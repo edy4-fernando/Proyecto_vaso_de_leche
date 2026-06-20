@@ -200,8 +200,11 @@
     {{-- ── Logo ── --}}
     <div class="vl-login-logo">
       <div class="vl-login-logo__icon"
-           style="box-shadow: 0 0 0 8px rgba(37,99,235,.1), 0 8px 32px rgba(37,99,235,.35);">
-        <i class="bi bi-droplet-half"></i>
+           style="box-shadow: 0 0 0 8px rgba(37,99,235,.1), 0 8px 32px rgba(37,99,235,.35);
+                  background:transparent; padding:4px;">
+        <img src="{{ asset('images/logo.png') }}"
+             alt="Vaso de Leche Cusco"
+             style="height:48px; width:auto; object-fit:contain;">
       </div>
       <h1 class="vl-login-logo__title">Vaso de Leche Cusco</h1>
       <p class="vl-login-logo__sub">Sistema de Gestión Municipal</p>

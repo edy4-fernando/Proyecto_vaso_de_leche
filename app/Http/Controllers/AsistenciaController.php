@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
 use App\Models\Beneficiario;
 use App\Models\Entrega;
 use App\Models\Producto;
@@ -17,6 +18,17 @@ class AsistenciaController extends Controller
 
     public function buscarDni(Request $request)
     {
+        // Rate limit: máx 10 búsquedas por IP cada 60 segundos
+        $key = 'asistencia.buscar|' . $request->ip();
+
+        if (RateLimiter::tooManyAttempts($key, 10)) {
+            $segundos = RateLimiter::availableIn($key);
+            return redirect()->route('asistencia.index')
+                ->with('error', "Demasiadas búsquedas. Espere {$segundos} segundos.");
+        }
+
+        RateLimiter::hit($key, 60);
+
         $request->validate([
             'dni' => 'required|digits:8',
         ], [
@@ -60,7 +72,7 @@ class AsistenciaController extends Controller
 
         Entrega::create([
             'beneficiario_id' => $beneficiario->id,
-            'user_id'         => 1,
+            'user_id'         => auth()->id(),
             'producto_id'     => $producto?->id,
             'fecha_entrega'   => today(),
             'hora_entrega'    => now()->format('H:i:s'),

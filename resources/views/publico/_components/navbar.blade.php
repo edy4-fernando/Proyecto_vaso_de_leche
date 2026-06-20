@@ -9,7 +9,9 @@
     {{-- Marca --}}
     <a class="navbar-brand d-flex align-items-center gap-2"
        href="{{ route('asistencia.index') }}">
-      <i class="bi bi-droplet-half text-info"></i>
+      <img src="{{ asset('images/logo.png') }}"
+           alt="Vaso de Leche Cusco"
+           style="height:32px; width:auto; object-fit:contain;">
       Cusco — Vaso de Leche
     </a>
 

@@ -143,7 +143,7 @@
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-      <form action="{{ route('perfil.cambiar-password') }}" method="POST">
+      <form action="{{ route('perfil.otp.enviar') }}" method="POST">
         @csrf
         <div class="modal-body">
 

@@ -18,6 +18,8 @@ class User extends Authenticatable
         'dni',
         'email',
         'password',
+        'otp_codigo',
+        'otp_expira_en',
         'telefono',
         'rol',
         'estado_cuenta',

@@ -55,6 +55,8 @@
   <link rel="stylesheet" href="{{ asset('css/navbar.css') }}">
   <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
   <link rel="stylesheet" href="{{ asset('css/dashboard-theme.css') }}">
+  <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+  <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
 
   @stack('styles')
 </head>

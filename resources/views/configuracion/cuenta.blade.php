@@ -163,7 +163,7 @@
           </div>
         </div>
 
-        <form action="{{ route('perfil.cambiar-password') }}" method="POST">
+        <form action="{{ route('perfil.otp.enviar') }}" method="POST">
           @csrf
 
           <div class="vl-form-group">
